@@ -1,0 +1,94 @@
+---
+title: '鉴权方式'
+description: '为您介绍 API 如何鉴权'
+---
+火山方舟API分为模型调用的API，以及其他管理推理接入点等管控面相关的其他API。他们支持的鉴权方式有所不同，下面介绍方舟相关的API鉴权方式。
+<span id="0fed4817"></span>
+## 模型/应用调用API鉴权
+<span id="60db1ed6"></span>
+### API Key 签名鉴权
+<span id="6011c5a5"></span>
+{/* ### 前提条件
+- 您已获取到API Key。如需创建/查看API Key，请参见[1.获取并配置 API Key ](https://www.volcengine.com/docs/82379/1399008#b00dee71)。
+- 您已创建推理接入点。如选创建/查看推理接入点ID，请参见[2.创建在线推理接入点（Endpoint）](https://www.volcengine.com/docs/82379/1399008#93d221a3)。
+<span id="d44d13a6"></span> */}
+#### 签名构造
+API Key 签名鉴权方式要求在 HTTP 请求 header 中按如下方式添加 `Authorization` header:
+```Shell
+Authorization: Bearer <ARK_API_KEY>
+```
+<span id="e8bd2618"></span>
+调用示例如下，将`<ARK_API_KEY>`替换为您的API Key；将`<YOUR_ENDPOINT_ID>`替换为您的推理接入点ID。
+```Shell curl {3}
+curl https://ark.cn-beijing.volces.com/api/v3/chat/completions \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <ARK_API_KEY>" \
+  -d '{
+    "model": "<YOUR_ENDPOINT_ID>",
+    "messages": [
+        {
+            "role": "system",
+            "content": "You are a helpful assistant."
+        },
+        {
+            "role": "user",
+            "content": "Hello!"
+        }
+    ]
+  }'
+```
+
+<span id="21bff83b"></span>
+### Access Key 签名鉴权
+<span id="3ad1c414"></span>
+#### 前提条件
+您已获取到 Access Key。查看[API访问密钥管理](https://www.volcengine.com/docs/6257/64983)了解如何获取 Access Key。
+> 由于主账号的 Access Key 拥有较大权限，建议您创建IAM用户并授予方舟等权限，然后使用IAM用户的Access Key来进行操作，可参考[使用IAM进行访问控制教程](https://www.volcengine.com/docs/82379/1263493)。
+
+<span id="c68f51fb"></span>
+#### 调用模型或应用
+您可以使用下面方式来间接完成 Access Key 签名鉴权。
+
+1. 获取临时 API Key：使用 Access Key 调用 [GetApiKey - 获取临时API Key](https://www.volcengine.com/docs/82379/1262825) 接口，获取指定资源（推理接入点/应用）的临时 API Key。
+2. 使用临时 API Key，来鉴权模型/应用调用，方式同上，见[API Key 签名鉴权](https://www.volcengine.com/docs/82379/1298459#60db1ed6)。
+
+<Tip>
+方舟已经提供了SDK，可以直接使用 Access Key 完成接口的鉴权，无需自行实现签名。
+- Python SDK：[使用Access Key鉴权](https://www.volcengine.com/docs/82379/1319847#61385def)。
+- Go SDK：[使用Access Key鉴权](https://www.volcengine.com/docs/82379/1319853#68185bfb)。
+- Java SDK：[使用Access Key鉴权](https://www.volcengine.com/docs/82379/1319854#5b9f723f)。
+</Tip>
+
+
+<span id="bdd329d5"></span>
+## 其他API鉴权
+管控面的API，如管理API Key、管理推理接入点等接口。
+<span id="50f355e8"></span>
+### Access Key 签名鉴权
+<span id="47c0c590"></span>
+#### 前提条件
+您已获取到Access Key。如需创建/查看Access Key，请参见[API访问密钥管理](https://www.volcengine.com/docs/6257/64983)。
+> 由于主账号的Access Key拥有较大权限，建议您创建IAM用户并授予方舟等权限，然后使用IAM用户的Access Key来进行操作，具体请参见[使用IAM进行访问控制教程](https://www.volcengine.com/docs/82379/1263493)。
+
+<span id="78351fef"></span>
+#### 使用步骤
+
+1. 使用 Access Key 构造签名。具体方法请参见[签名方法](https://www.volcengine.com/docs/6369/67269)。
+<Note>
+签名用到的方舟相关字段信息：
+* Service：`ark`
+* Region：`cn-beijing`
+</Note>
+
+2. 使用cURL发起请求，请求示例如下：
+
+```Shell curl {3}
+curl -X POST \
+  'https://open.volcengineapi.com/?Action=ListEndpoints&Version=2024-01-01' \
+  -H 'Authorization: HMAC-SHA256 Credential=AKLTM2MyNzJhMGExZmFhNDI5YTgzMTI****************/20240710/cn-beijing/ark/request, SignedHeaders=host;x-content-sha256;x-date, Signature=a7a01ad627bcb9ef03bd708bf0f680873d99fa99c45fe8b4****************' \
+  -H 'Content-Type: application/json' \
+  -H 'Host: open.volcengineapi.com' \
+  -H 'X-Content-Sha256: 44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e83****************' \
+  -H 'X-Date: 20240710T042925Z' \
+  -d '{}'
+```

@@ -1,33 +1,13 @@
 ---
-title: 'Introduction'
-description: 'Example section for showcasing API endpoints'
+title: '简介'
+description: '介绍 API 文档'
 ---
 
-<Note>
-  If you're not looking to build API reference documentation, you can delete
-  this section by removing the api-reference folder.
-</Note>
+## 调用 API 的方式
+您可以通过任何语言的 HTTP 请求来与 API 进行交互，也包括火山方舟的官方 Python SDK、Go SDK、Java SDK；OpenAI SDK、Langchain SDK 等三方 SDK。
+> 安装和使用SDK的方式请参考<a href="../quickstart" target="_blank">快速入门</a>。
 
-## Welcome
 
-There are two ways to build API documentation: [OpenAPI](https://mintlify.com/docs/api-playground/openapi/setup) and [MDX components](https://mintlify.com/docs/api-playground/mdx/configuration). For the starter kit, we are using the following OpenAPI specification.
+## 鉴权方式
 
-<Card
-  title="Plant Store Endpoints"
-  icon="leaf"
-  href="https://github.com/mintlify/starter/blob/main/api-reference/openapi.json"
->
-  View the OpenAPI specification file
-</Card>
-
-## Authentication
-
-All API endpoints are authenticated using Bearer tokens and picked up from the specification file.
-
-```json
-"security": [
-  {
-    "bearerAuth": []
-  }
-]
-```
+火山方舟API分为模型调用的API，以及其他管理推理接入点等管控面相关的其他API。他们支持的鉴权方式有所不同。

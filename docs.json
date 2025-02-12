@@ -3,115 +3,72 @@
   "theme": "mint",
   "name": "方舟模型服务平台",
   "colors": {
-    "primary": "#006891",
-    "light": "#006891",
-    "dark": "#006891"
+    "primary": "#16A34A",
+    "light": "#07C983",
+    "dark": "#15803D"
   },
   "favicon": "/favicon.svg",
   "navigation": {
     "global": {
       "anchors": [
         {
-          "anchor": "API Key",
+          "anchor": "获取 API Key",
           "href": "https://console.volcengine.com/ark/region:ark+cn-beijing/apiKey?apikey=%7B%7D",
-          "icon": "book-open-cover"
+          "icon": "key"
         },
         {
-          "anchor": "开通模型",
+          "anchor": "开通模型服务",
           "href": "https://console.volcengine.com/ark/region:ark+cn-beijing/openManagement?LLM=%7B%7D&OpenTokenDrawer=false",
-          "icon": "newspaper"
+          "icon": "lock-open"
         },
         {
-          "anchor": "推理接入点",
+          "anchor": "创建推理接入点",
           "href": "https://console.volcengine.com/ark/region:ark+cn-beijing/endpoint?config=%7B%7D",
-          "icon": "slack"
+          "icon": "rocket"
         }
       ]
     },
-    "languages": [
+
+    "tabs": [
       {
-        "language": "cn",
-        "tabs": [
+        "tab": "教程",
+        "groups": [
           {
-            "tab": "教程",
-            "groups": [
+            "group": "开始使用",
+            "pages": ["introduction", "quickstart", "development"]
+          },
+          {
+            "group": "Essentials",
+            "pages": [
+              "essentials/markdown",
+              "essentials/code",
+              "essentials/images",
+              "essentials/settings",
+              "essentials/navigation",
+              "essentials/reusable-snippets",
               {
                 "group": "开始使用",
                 "pages": ["introduction", "quickstart", "development"]
-              },
-              {
-                "group": "Essentials",
-                "pages": [
-                  "essentials/markdown",
-                  "essentials/code",
-                  "essentials/images",
-                  "essentials/settings",
-                  "essentials/navigation",
-                  "essentials/reusable-snippets"
-                ]
-              }
-            ]
-          },
-          {
-            "tab": "API 参考",
-            "groups": [
-              {
-                "group": "API Documentation",
-                "pages": ["api-reference/introduction"]
-              },
-              {
-                "group": "Endpoint Examples",
-                "pages": [
-                  "api-reference/endpoint/chatcompletions",
-                  "api-reference/endpoint/get",
-                  "api-reference/endpoint/create",
-                  "api-reference/endpoint/delete"
-                ]
               }
             ]
           }
         ]
-        
       },
-
       {
-        "language": "en",
-        "tabs": [
+        "tab": "API 参考",
+        "groups": [
           {
-            "tab": "docs",
-            "groups": [
-              {
-                "group": "get started",
-                "pages": ["introduction", "quickstart", "development"]
-              },
-              {
-                "group": "Essentials",
-                "pages": [
-                  "essentials/markdown",
-                  "essentials/code",
-                  "essentials/images",
-                  "essentials/settings",
-                  "essentials/navigation",
-                  "essentials/reusable-snippets"
-                ]
-              }
+            "group": "API调用说明",
+            "pages": [
+                "api-reference/introduction",
+                "api-reference/authentication"
             ]
+            
           },
           {
-            "tab": "API reference",
-            "groups": [
-              {
-                "group": "API Documentation",
-                "pages": ["api-reference/introduction"]
-              },
-              {
-                "group": "Endpoint Examples",
-                "pages": [
-                  "api-reference/endpoint/get",
-                  "api-reference/endpoint/create",
-                  "api-reference/endpoint/delete"
-                ]
-              }
+            "group": "文本生成",
+            "pages": [
+              "api-reference/endpoint/chatcompletions-textg"
             ]
           }
         ]
@@ -120,27 +77,19 @@
   },
   "api": {
     "mdx": {
-      "server": "https://ark.cn-beijing.volces.com", 
+      "server": "https://ark.cn-beijing.volces.com",
       "auth": {
         "method": "key",
         "name": "x-api-key"
       }
     }
   },
-
   "logo": {
     "light": "/logo/logo.svg",
     "dark": "/logo/logo.svg",
     "href": "https://console.volcengine.com/ark"
   },
   "navbar": {
-    "links": [
-      {
-        "label": "火山引擎",
-        "href": "https://www.volcengine.com/"
-      }
-    ],
-
     "primary": {
       "type": "button",
       "label": "体验中心",
