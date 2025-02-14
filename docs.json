@@ -3,9 +3,9 @@
   "theme": "mint",
   "name": "方舟模型服务平台",
   "colors": {
-    "primary": "#16A34A",
-    "light": "#07C983",
-    "dark": "#15803D"
+    "primary": "#0084ff",
+    "light": "#66b5ff",
+    "dark": "#004f99"
   },
   "favicon": "/favicon.svg",
   "navigation": {
@@ -36,21 +36,6 @@
           {
             "group": "开始使用",
             "pages": ["introduction", "quickstart", "development"]
-          },
-          {
-            "group": "Essentials",
-            "pages": [
-              "essentials/markdown",
-              "essentials/code",
-              "essentials/images",
-              "essentials/settings",
-              "essentials/navigation",
-              "essentials/reusable-snippets",
-              {
-                "group": "开始使用",
-                "pages": ["introduction", "quickstart", "development"]
-              }
-            ]
           }
         ]
       },
@@ -58,17 +43,16 @@
         "tab": "API 参考",
         "groups": [
           {
-            "group": "API调用说明",
-            "pages": [
-                "api-reference/introduction",
-                "api-reference/authentication"
+            "group": " ",
+            "pages": [                
+                "api-reference/authentication",
+                "api-reference/error-codes"
             ]
-            
           },
           {
             "group": "文本生成",
             "pages": [
-              "api-reference/endpoint/chatcompletions-textg"
+              "api-reference/endpoint/chatcompletions"
             ]
           }
         ]
@@ -77,16 +61,19 @@
   },
   "api": {
     "mdx": {
-      "server": "https://ark.cn-beijing.volces.com",
+      "server": "https://ark.cn-beijing.volces.com/api/v3",
       "auth": {
         "method": "key",
         "name": "x-api-key"
       }
+    },
+    "examples": {
+        "languages": ["curl","python","go","java"]
     }
   },
   "logo": {
-    "light": "/logo/logo.svg",
-    "dark": "/logo/logo.svg",
+    "light": "/logo/logo_light.svg",
+    "dark": "/logo/logo_dark.svg",
     "href": "https://console.volcengine.com/ark"
   },
   "navbar": {

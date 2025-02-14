@@ -1,666 +1,791 @@
 {
-    "openapi": "3.0.0",
-    "info": {
-        "title": "ChatCompletions",
-        "description": "本文介绍Doubao语言大模型API的输入输出参数，供您使用接口向大模型发起文字对话请求时查阅字段含义。您如果希望查看接口使用示例以及使用说明，可以参考教程[文本生成](https://www.volcengine.com/docs/82379/1399009)。",
-        "version": "1.0.0"
-    },
-    "servers": [
-        {
-            "url": "https://ark.cn-beijing.volces.com/api/v3"
-        }
-    ],
-    "paths": {
-        "/chat/completions": {
-            "post": {
-                "summary": "ChatCompletions-文本生成",
-                "description": "使用此接口向Doubao语言大模型发起文字对话请求。",
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/ChatCompletionsRequest"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "成功响应",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "oneOf": [
-                                        {
-                                            "$ref": "#/components/schemas/NonStreamResponse"
-                                        },
-                                        {
-                                            "$ref": "#/components/schemas/StreamResponse"
-                                        }
-                                    ]
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "输入文本可能包含敏感信息",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorResponse"
-                                }
-                            }
-                        }
-                    }
-                }
+  "openapi": "3.1.0",
+  "info": {
+    "title": "方舟",
+    "description": "",
+    "version": "1.0.0"
+  },
+  "tags": [],
+  "paths": {
+    "/chat/completions": {
+      "post": {
+        "summary": "ChatCompletions",
+        "deprecated": false,
+        "description": "使用此接口向Doubao语言大模型发起文字对话请求。",
+        "tags": [],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChatCompletionsRequest"
+              },
+              "example": {
+                "model": "<YOUR_ENDPOINT_ID>",
+                "messages": [
+                  {
+                    "role": "user",
+                    "content": "你好"
+                  }
+                ]
+              }
             }
-        }
-    },
-    "components": {
-        "securitySchemes": {
-            "ApiKeyAuth": {
-                "type": "http",
-                "scheme": "bearer",
-                "bearerFormat": "API Key",
-                "description": "本接口支持 API Key 鉴权方式，详见[鉴权认证方式](https://www.volcengine.com/docs/82379/1298459)。\n > 如果您需要使用Access Key来调用，可以使用接口来获取临时API Key，详细接口说明请参见[GetApiKey - 获取临时API Key](https://www.volcengine.com/docs/82379/1262825)。\n 推荐使用 SDK 的方式，无需自行实现鉴权，具体请参见 [SDK概述](https://www.volcengine.com/docs/82379/1302007)。"
-            }
+          }
         },
-        "schemas": {
-            "ChatCompletionsRequest": {
-                "type": "object",
-                "required": [
-                    "model",
-                    "messages"
-                ],
-                "properties": {
-                    "model": {
-                        "type": "string",
-                        "description": "您创建的推理接入点 ID。调用模型服务前，您需要创建推理接入点，并获取推理接入点 ID，具体请参见[创建推理接入点](https://www.volcengine.com/docs/82379/1099522#模型推理使用入口)。",
-                        "example": "ep-2024**-"
+        "responses": {
+          "200": {
+            "description": "成功响应",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/NonStreamResponse"
                     },
-                    "messages": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/MessageParam"
-                        },
-                        "description": "由目前为止的对话组成的消息列表。当指定了 `tools` 参数以使用模型的 function call 能力时，请确保 `messages` 列表内的消息满足如下要求：如果 message 列表中前文出现了带有 n 个 `tool_calls` 的 Assistant Message，则后文必须有连续 n 个分别和每个 `tool_call_id` 相对应的 Tool Message，来回应 `tool_calls` 的信息要求。"
-                    },
-                    "stream": {
-                        "type": "boolean",
-                        "default": false,
-                        "description": "响应内容是否流式返回：\n- `false`：模型生成完所有内容后一次性返回结果；\n- `true`：按 SSE 协议逐块返回模型生成内容，并以一条 `data: [DONE]` 消息结束。",
-                        "example": false
-                    },
-                    "stream_options": {
-                        "type": "object",
-                        "allOf": [
-                            {
-                                "$ref": "#/components/schemas/StreamOptionsParam"
-                            }
-                        ],
-                        "description": "流式响应的选项。仅当 `stream: true` 时可以设置 `stream_options` 参数。"
-                    },
-                    "max_tokens": {
-                        "type": "integer",
-                        "default": 4096,
-                        "description": "- **模型回复最大长度（单位 token），取值范围各个模型不同，详细见**[模型列表](https://www.volcengine.com/docs/82379/1330310)**。**\n- **输入 token 和输出 token 的总长度还受模型的上下文长度限制。**\n",
-                        "example": 4096
-                    },
-                    "stop": {
-                        "oneOf": [
-                            {
-                                "type": "string"
-                            },
-                            {
-                                "type": "array",
-                                "items": {
-                                    "type": "string"
-                                }
-                            }
-                        ],
-                        "description": "模型遇到 `stop` 字段所指定的字符串时将停止继续生成，这个词语本身不会输出。最多支持 4 个字符串。",
-                        "example": ["你好", "天气"]
-                    },
-                    "frequency_penalty": {
-                        "type": "number",
-                        "format": "float",
-                        "default": 0,
-                        "description": "频率惩罚系数。如果值为正，会根据新 token 在文本中的出现频率对其进行惩罚，从而降低模型逐字重复的可能性。取值范围为 [-2.0, 2.0]。",
-                        "example": 1
-                    },
-                    "presence_penalty": {
-                        "type": "number",
-                        "format": "float",
-                        "default": 0,
-                        "description": "存在惩罚系数。如果值为正，会根据新 token 到目前为止是否出现在文本中对其进行惩罚，从而增加模型谈论新主题的可能性。取值范围为 [-2.0, 2.0]。",
-                        "example": 1
-                    },
-                    "temperature": {
-                        "type": "number",
-                        "format": "float",
-                        "default": 1,
-                        "description": "采样温度。控制了生成文本时对每个候选词的概率分布进行平滑的程度。取值范围为 [0, 1]。当取值为 0 时模型仅考虑对数概率最大的一个 token。较高的值（如 0.8）会使输出更加随机，而较低的值（如 0.2）会使输出更加集中确定。通常建议仅调整 `temperature` 或 `top_p` 其中之一，不建议两者都修改。",
-                        "example": 0.8
-                    },
-                    "top_p": {
-                        "type": "number",
-                        "format": "float",
-                        "default": 0.7,
-                        "description": "核采样概率阈值。模型会考虑概率质量在 `top_p` 内的 token 结果。取值范围为 [0, 1]。当取值为 0 时模型仅考虑对数概率最大的一个 token。如 0.1 意味着只考虑概率质量最高的前 10% 的 token，取值越大生成的随机性越高，取值越低生成的确定性越高。通常建议仅调整 `temperature` 或 `top_p` 其中之一，不建议两者都修改。",
-                        "example": 0.8
-                    },
-                    "logprobs": {
-                        "type": "boolean",
-                        "default": false,
-                        "description": "是否返回输出 tokens 的对数概率：\n- `false`：不返回对数概率信息；\n- `true`：返回消息内容中每个输出 token 的对数概率。",
-                        "example": false
-                    },
-                    "top_logprobs": {
-                        "type": "integer",
-                        "default": 0,
-                        "description": "指定每个输出 token 位置最有可能返回的 token 数量，每个 token 都有关联的对数概率。仅当 `logprobs: true` 时可以设置 `top_logprobs` 参数，取值范围为 [0, 20]。",
-                        "example": 2
-                    },
-                    "logit_bias": {
-                        "type": "object",
-                        "additionalProperties": {
-                            "type": "integer"
-                        },
-                        "description": "调整指定 token 在模型输出内容中出现的概率，使模型生成的内容更加符合特定的偏好。`logit_bias` 字段接受一个 map 值，其中每个键为词表中的 token ID（使用 tokenization 接口获取），每个值为该 token 的偏差值，取值范围为 [-100, 100]。-1 会减少选择的可能性，1 会增加选择的可能性；-100 会完全禁止选择该 token，100 会导致仅可选择该 token。该参数的实际效果可能因模型而异。",
-                        "example": {
-                            "1234": -100
-                        }
-                    },
-                    "tools": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/ToolParam"
-                        },
-                        "description": "模型可以调用的工具列表（参见[支持范围](https://www.volcengine.com/docs/82379/1262342#8c325d45)）。目前，仅函数作为工具被支持。用这个来提供模型可能为其生成 JSON 输入的函数列表。"
+                    {
+                      "$ref": "#/components/schemas/StreamResponse"
                     }
+                  ]
                 }
+              }
             },
-            "MessageParam": {
-                "type": "object",
-                "required": [
-                    "role"
-                ],
-                "properties": {
+            "headers": {}
+          },
+          "400": {
+            "description": "输入文本可能包含敏感信息",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ChatCompletionsRequest": {
+        "type": "object",
+        "required": ["model", "messages"],
+        "properties": {
+          "model": {
+            "type": "string",
+            "description": "您创建的推理接入点 ID。调用模型服务前，您需要创建推理接入点，并获取推理接入点 ID，具体请参见[创建推理接入点](https://www.volcengine.com/docs/82379/1099522#模型推理使用入口)。",
+            "examples": ["ep-2024**-"]
+          },
+          "messages": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "Systerm message": {
+                  "type": "object",
+                  "properties": {
                     "role": {
-                        "type": "string",
-                        "description": "发出该消息的对话参与者角色，可选值包括：\n- `system`：System Message 系统消息；\n- `user`：User Message 用户消息；\n- `assistant`：Assistant Message 对话助手消息；\n- `tool`：Tool Message 工具调用消息。",
-                        "example": "user"
+                      "type": "string",
+                      "description": "消息的作者，此处应为`system`"
                     },
                     "content": {
-                        "type": "string",
-                        "description": "消息内容，文本生成模型仅支持 String 类型。当 `role` 为 `system`、`user`、`tool`时，参数必填。当 `role` 为 `assistant` 时，`content` 与 `tool_calls` 参数二者至少填写其一。",
-                        "example": "世界第一高山是什么？"
-                    },
-                    "tool_calls": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/MessageToolCallParam"
+                      "oneOf": [
+                        {
+                          "type": "string"
                         },
-                        "description": "模型生成的工具调用。当 `role` 为 `assistant` 时，`content` 与 `tool_calls` 参数二者至少填其一。"
-                    },
-                    "tool_call_id": {
-                        "type": "string",
-                        "description": "此消息所回应的工具调用 ID，当 `role` 为 `tool` 时必填。",
-                        "example": "call_5y***********"
+                        {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      ],
+                      "description": "系统信息内容"
                     }
-                }
-            },
-            "MessageToolCallParam": {
-                "type": "object",
-                "required": [
-                    "id",
-                    "type",
-                    "function"
-                ],
-                "properties": {
-                    "id": {
-                        "type": "string",
-                        "description": "当前工具调用 ID。",
-                        "example": "call_5y**********"
+                  },
+                  "required": ["content", "role"],
+                  "description": "系统信息"
+                },
+                "User message": {
+                  "type": "object",
+                  "properties": {
+                    "role": {
+                      "type": "string",
+                      "description": "发送消息的角色，此处应为`user`"
                     },
-                    "type": {
-                        "type": "string",
-                        "description": "工具类型，当前仅支持`function`。",
-                        "example": "function"
-                    },
-                    "function": {
-                        "$ref": "#/components/schemas/FunctionParam"
-                    }
-                }
-            },
-            "FunctionParam": {
-                "type": "object",
-                "required": [
-                    "name",
-                    "arguments"
-                ],
-                "properties": {
-                    "name": {
-                        "type": "string",
-                        "description": "模型需要调用的函数名称。",
-                        "example": "get_current_weather"
-                    },
-                    "arguments": {
-                        "type": "string",
-                        "description": "模型生成的用于调用函数的参数，JSON 格式。请注意，模型并不总是生成有效的 JSON，并且可能会虚构出一些您的函数参数规范中未定义的参数。在调用函数之前，请在您的代码中验证这些参数是否有效。",
-                        "example": "{\"location\": \"Boston, MA\"}"
-                    }
-                }
-            },
-            "ToolParam": {
-                "type": "object",
-                "required": [
-                    "type",
-                    "function"
-                ],
-                "properties": {
-                    "type": {
-                        "type": "string",
-                        "description": "工具类型，当前仅支持 `function`。",
-                        "example": "function"
-                    },
-                    "function": {
-                        "$ref": "#/components/schemas/FunctionDefinition"
-                    }
-                }
-            },
-            "FunctionDefinition": {
-                "type": "object",
-                "required": [
-                    "name"
-                ],
-                "properties": {
-                    "name": {
-                        "type": "string",
-                        "description": "函数的名称。",
-                        "example": "get_current_weather"
-                    },
-                    "description": {
-                        "type": "string",
-                        "description": "对函数用途的描述，供模型判断何时以及如何调用该工具函数。",
-                        "example": "获取指定城市的天气信息"
-                    },
-                    "parameters": {
-                        "type": "object",
-                        "description": "函数请求参数，以 JSON Schema 格式描述。具体格式请参考 [JSON Schema](https://json-schema.org/understanding-json-schema) 文档。",
-                        "example": {
+                    "content": {
+                      "oneOf": [
+                        {
+                          "type": "string",
+                          "description": "文本信息，语言类文本大模型类型为此"
+                        },
+                        {
+                          "type": "array",
+                          "items": {
                             "type": "object",
                             "properties": {
-                                "location": {
+                              "Text content ": {
+                                "type": "object",
+                                "properties": {
+                                  "type": {
                                     "type": "string",
-                                    "description": "城市，如：北京"
-                                }
-                            },
-                            "required": ["location"]
+                                    "description": "信息类型，此处为`text`"
+                                  },
+                                  "text": {
+                                    "type": "string",
+                                    "description": "文本内容"
+                                  }
+                                },
+                                "required": ["type", "text"],
+                                "description": "信息的文本内容部分"
+                              },
+                              "Image content": {
+                                "type": "object",
+                                "properties": {
+                                  "type": {
+                                    "type": "string",
+                                    "description": "信息类型，此处为`image_url`"
+                                  },
+                                  "image_url": {
+                                    "type": "object",
+                                    "properties": {
+                                      "url": {
+                                        "type": "string",
+                                        "description": "图片信息，支持传入图片链接或图片的Base64编码，不同模型支持图片大小略有不同，具体请参见[使用说明](https://www.volcengine.com/docs/82379/1362931#%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E)。\n传入图片URL。\n传入Base64编码：请遵循格式data:image/<图片格式>;base64,<Base64编码>，完整示例请参见Base64编码输入。\n<图片格式>：图片的格式\n<Base64编码>：图片的Base64编码。"
+                                      },
+                                      "detail": {
+                                        "type": "string",
+                                        "description": "理解图片的精度：支持手动设置图片的质量，取值范围high、low、auto。\nhigh：高细节模式，适用于需要理解图像细节信息的场景，如对图像的多个局部信息/特征提取、复杂/丰富细节的图像理解等场景，理解更全面。\nlow：低细节模式，适用于简单的图像分类/识别、整体内容理解/描述等场景，理解更快速。\nauto：默认模式，不同模型选择的模式略有不同，具体请参见[理解图像的深度控制](https://www.volcengine.com/docs/82379/1362931#%E7%90%86%E8%A7%A3%E5%9B%BE%E5%83%8F%E7%9A%84%E6%B7%B1%E5%BA%A6%E6%8E%A7%E5%88%B6)。",
+                                        "enum": ["auto", "high", "low"]
+                                      }
+                                    },
+                                    "required": ["url"],
+                                    "description": "图片内容结构体"
+                                  }
+                                },
+                                "required": ["type", "image_url"],
+                                "description": "信息的图片部分"
+                              }
+                            }
+                          },
+                          "description": "内容数组部分，视觉理解等多模态大模型用户消息类型为此。可以包含文本、图像等类型的输入。"
                         }
-                    }
-                }
-            },
-            "StreamOptionsParam": {
-                "type": "object",
-                "properties": {
-                    "include_usage": {
-                        "type": "boolean",
-                        "default": false,
-                        "description": "是否包含本次请求的 token 用量统计信息：\n- `false`：不返回 token 用量信息；\n- `true`：在 `data: [DONE]` 消息之前返回一个额外的块，此块上的 `usage` 字段代表整个请求的 token 用量，`choices` 字段为空数组。所有其他块也将包含 `usage` 字段，但值为 `null`。",
-                        "example": false
-                    }
-                }
-            },
-            "NonStreamResponse": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "string",
-                        "description": "本次请求的唯一标识。",
-                        "example": "02171********************"
+                      ]
                     },
-                    "model": {
-                        "type": "string",
-                        "description": "本次请求实际使用的模型名称和版本。Doubao 1.5 代模型的模型名称格式为 doubao-1-5-**，如调用部署doubao-1.5-pro-32k 250115模型的推理接入点，返回`model`字段信息doubao-1-5-pro-32k-250115。",
-                        "example": "doubao-pro-4k-240515"
-                    },
-                    "created": {
-                        "type": "integer",
-                        "description": "本次请求创建时间的 Unix 时间戳（秒）。",
-                        "example": 1718049470
-                    },
-                    "object": {
-                        "type": "string",
-                        "description": "固定为 `chat.completion`。",
-                        "example": "chat.completion"
-                    },
-                    "choices": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/Choice"
-                        },
-                        "description": "本次请求的模型输出内容。"
-                    },
-                    "usage": {
-                        "$ref": "#/components/schemas/Usage"
-                    }
-                }
-            },
-            "StreamResponse": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "string",
-                        "description": "本次请求的唯一标识。",
-                        "example": "02171804947"
-                    },
-                    "model": {
-                        "type": "string",
-                        "description": "本次请求实际使用的模型名称和版本。Doubao 1.5 代模型的模型名称格式为 doubao-1-5-**，如调用部署doubao-1.5-pro-32k 250115模型的推理接入点，返回`model`字段信息doubao-1-5-pro-32k-250115。",
-                        "example": "doubao-pro-4k-240515"
-                    },
-                    "created": {
-                        "type": "integer",
-                        "description": "本次请求创建时间的 Unix 时间戳（秒）。",
-                        "example": 1718049470
-                    },
-                    "object": {
-                        "type": "string",
-                        "description": "固定为 `chat.completion.chunk`。",
-                        "example": "chat.completion.chunk"
-                    },
-                    "choices": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/StreamChoice"
-                        },
-                        "description": "本次请求的模型输出内容。"
-                    },
-                    "usage": {
-                        "$ref": "#/components/schemas/Usage"
-                    }
-                }
-            },
-            "Choice": {
-                "type": "object",
-                "properties": {
-                    "index": {
-                        "type": "integer",
-                        "description": "当前元素在 `choices` 列表的索引。",
-                        "example": 0
-                    },
-                    "finish_reason": {
-                        "type": "string",
-                        "description": "模型停止生成 token 的原因。取值范围：\n- `stop`：模型输出自然结束，或因命中请求参数 `stop` 中指定的字段而被截断；\n- `length`：模型输出因达到请求参数 `max_token` 指定的最大 token 数量而被截断；\n- `content_filter`：模型输出被内容审核拦截；\n- `tool_calls`：模型调用了工具。",
-                        "example": "stop"
-                    },
-                    "message": {
-                        "$ref": "#/components/schemas/Message"
-                    },
-                    "logprobs": {
-                        "$ref": "#/components/schemas/ChoiceLogprobs"
-                    }
-                }
-            },
-            "Message": {
-                "type": "object",
-                "properties": {
-                    "role": {
-                        "type": "string",
-                        "description": "固定为 `assistant`。",
-                        "example": "assistant"
-                    },
-                    "content": {
-                        "type": "string",
-                        "description": "模型生成的消息内容，`content` 与 `tool_calls` 字段二者至少有一个为非空。",
-                        "example": "\"你好\""
-                    },
-                    "reasoning_content": {
-                        "type": "string",
-                        "description": "模型处理问题的思维链内容。支持返回此字段的模型请参见[支持模型](https://www.volcengine.com/docs/82379/1449737#5f0f3750)。",
-                        "example": null
-                    },
-                    "tool_calls": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/MessageToolCall"
-                        },
-                        "description": "模型生成的工具调用，`content` 与 `tool_calls` 字段二者至少有一个为非空。"
-                    }
-                }
-            },
-            "MessageToolCall": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "string",
-                        "description": "当前工具调用 ID。",
-                        "example": "call_5y********"
-                    },
-                    "type": {
-                        "type": "string",
-                        "description": "工具类型，当前仅支持`function`。",
-                        "example": "function"
-                    },
-                    "function": {
-                        "$ref": "#/components/schemas/Function"
-                    }
-                }
-            },
-            "Function": {
-                "type": "object",
-                "properties": {
                     "name": {
-                        "type": "string",
-                        "description": "模型需要调用的函数名称。",
-                        "example": "get_current_weather"
-                    },
-                    "arguments": {
-                        "type": "string",
-                        "description": "模型生成的用于调用函数的参数，JSON 格式。请注意，模型并不总是生成有效的 JSON，并且可能会虚构出一些您的函数参数规范中未定义的参数。在调用函数之前，请在您的代码中验证这些参数是否有效。",
-                        "example": "{\"location\": \"Boston, MA\"}"
+                      "type": "string",
+                      "description": "发送此信息的角色的名字"
                     }
-                }
-            },
-            "ChoiceLogprobs": {
-                "type": "object",
-                "properties": {
-                    "content": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/TokenLogprob"
-                        },
-                        "description": "`message`列表中每个 `content` 元素中的 token 对数概率信息。"
-                    }
-                }
-            },
-            "TokenLogprob": {
-                "type": "object",
-                "properties": {
-                    "token": {
-                        "type": "string",
-                        "description": "当前 token。",
-                        "example": "The"
-                    },
-                    "bytes": {
-                        "type": "array",
-                        "items": {
-                            "type": "integer"
-                        },
-                        "description": "当前 token 的 UTF-8 值，格式为整数列表。当一个字符由多个 token 组成（表情符号或特殊字符等）时可以用于字符的编码和解码。如果 token 没有 UTF-8 值则为空。",
-                        "example": [84, 104, 101]
-                    },
-                    "logprob": {
-                        "type": "number",
-                        "format": "float",
-                        "description": "当前 token 的对数概率。",
-                        "example": -0.0155029296875
-                    },
-                    "top_logprobs": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/TopLogprob"
-                        },
-                        "description": "在当前 token 位置最有可能的标记及其对数概率的列表。在一些情况下，返回的数量可能比请求参数 `top_logprobs` 指定的数量要少。"
-                    }
-                }
-            },
-            "TopLogprob": {
-                "type": "object",
-                "properties": {
-                    "token": {
-                        "type": "string",
-                        "description": "当前 token。",
-                        "example": "The"
-                    },
-                    "bytes": {
-                        "type": "array",
-                        "items": {
-                            "type": "integer"
-                        },
-                        "description": "当前 token 的 UTF-8 值，格式为整数列表。当一个字符由多个 token 组成（表情符号或特殊字符等）时可以用于字符的编码和解码。如果 token 没有 UTF-8 值则为空。",
-                        "example": [84, 104, 101]
-                    },
-                    "logprob": {
-                        "type": "number",
-                        "format": "float",
-                        "description": "当前 token 的对数概率。",
-                        "example": -0.0155029296875
-                    }
-                }
-            },
-            "Usage": {
-                "type": "object",
-                "properties": {
-                    "prompt_tokens": {
-                        "type": "integer",
-                        "description": "输入的 prompt token 数量。",
-                        "example": 130
-                    },
-                    "completion_tokens": {
-                        "type": "integer",
-                        "description": "模型生成的 token 数量。",
-                        "example": 100
-                    },
-                    "total_tokens": {
-                        "type": "integer",
-                        "description": "本次请求消耗的总 token 数量（输入 + 输出）。",
-                        "example": 230
-                    },
-                    "prompt_tokens_details": {
-                        "type": "object",
-                        "description": "本接口暂不支持上下文缓存，此时返回应为`\"cached_tokens\": 0`。prompt_tokens中命中上下文缓存的tokens数。需要开通上下文缓存功能，并创建缓存才会启用，详细见[上下文缓存（Context API）概述](https://www.volcengine.com/docs/82379/1398933)。",
-                        "example": {
-                            "cached_tokens": 0
-                        }
-                    },
-                    "completion_tokens_details": {
-                        "type": "object",
-                        "description": "本次请求花费的 token 的细节。其中`reasoning_tokens`是指输出思维链内容花费的 token 。支持输出思维链的模型请参见[支持模型](https://www.volcengine.com/docs/82379/1449737#5f0f3750)。",
-                        "example": {
-                            "reasoning_tokens": 0
-                        }
-                    }
-                }
-            },
-            "StreamChoice": {
-                "type": "object",
-                "properties": {
-                    "index": {
-                        "type": "integer",
-                        "description": "当前元素在 `choices` 列表的索引。",
-                        "example": 0
-                    },
-                    "finish_reason": {
-                        "type": "string",
-                        "description": "模型停止生成 token 的原因。可能的值包括：\n- `stop`：模型输出自然结束，或因命中请求参数 `stop` 中指定的字段而被截断；\n- `length`：模型输出因达到请求参数 `max_token` 指定的最大 token 数量而被截断；\n- `content_filter`：模型输出被内容审核拦截；\n- `tool_calls`：模型调用了工具。",
-                        "example": "stop"
-                    },
-                    "delta": {
-                        "$ref": "#/components/schemas/ChoiceDelta"
-                    },
-                    "logprobs": {
-                        "$ref": "#/components/schemas/ChoiceLogprobs"
-                    }
-                }
-            },
-            "ChoiceDelta": {
-                "type": "object",
-                "properties": {
+                  },
+                  "description": "用户消息",
+                  "required": ["content", "role"]
+                },
+                "Assistant message": {
+                  "type": "object",
+                  "properties": {
                     "role": {
-                        "type": "string",
-                        "description": "固定为 `assistant`。",
-                        "example": "assistant"
+                      "type": "string",
+                      "description": "发出该消息的角色，此处应为 `assistant`。"
                     },
                     "content": {
-                        "type": "string",
-                        "description": "模型生成的消息内容，`content` 与 `tool_calls` 字段二者必有一个为非空。",
-                        "example": "\"你好\""
+                      "type": "string",
+                      "description": "模型消息的内容"
                     },
                     "tool_calls": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/ChoiceDeltaToolCall"
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "description": "当前工具调用 ID。",
+                          "examples": ["call_5y**********"]
                         },
-                        "description": "模型生成的工具调用列表，`content` 与 `tool_calls` 字段二者必有一个为非空。"
+                        "type": {
+                          "type": "string",
+                          "description": "工具类型，当前仅支持`function`。",
+                          "examples": ["function"]
+                        },
+                        "function": {
+                          "$ref": "#/components/schemas/FunctionParam"
+                        }
+                      },
+                      "description": "模型生成的工具调用。content 与 tool_calls 参数二者至少填其一。",
+                      "required": ["id", "type", "function"]
                     }
+                  },
+                  "description": "历史发布的模型消息",
+                  "required": ["role"]
+                },
+                "Tool message": {
+                  "type": "object",
+                  "properties": {
+                    "role": {
+                      "type": "string",
+                      "description": "发出该消息的角色，此处应为 `tool`。"
+                    },
+                    "content": {
+                      "type": "string",
+                      "description": "消息内容，一般为调用工具后的返回。"
+                    },
+                    "tool_call_id": {
+                      "type": "string",
+                      "description": "此消息所回应的工具调用 ID",
+                      "examples": ["call_5y***********"]
+                    }
+                  },
+                  "description": "工具调用信息",
+                  "required": ["role", "content", "tool_call_id"]
                 }
+              },
+              "required": ["User message"]
             },
-            "ChoiceDeltaToolCall": {
-                "type": "object",
-                "properties": {
-                    "index": {
-                        "type": "integer",
-                        "description": "当前元素在 `tool_calls` 列表的索引。",
-                        "example": 0
-                    },
-                    "id": {
-                        "type": "string",
-                        "description": "当前工具调用 ID。",
-                        "example": "call_5y***********"
-                    },
-                    "type": {
-                        "type": "string",
-                        "description": "工具类型，当前仅支持`function`。",
-                        "example": "function"
-                    },
-                    "function": {
-                        "$ref": "#/components/schemas/Function"
-                    }
+            "description": "由目前为止的对话组成的消息列表。当指定了 `tools` 参数以使用模型的 function call 能力时，请确保 `messages` 列表内的消息满足如下要求：如果 message 列表中前文出现了带有 n 个 `tool_calls` 的 Assistant Message，则后文必须有连续 n 个分别和每个 `tool_call_id` 相对应的 Tool Message，来回应 `tool_calls` 的信息要求。"
+          },
+          "stream": {
+            "type": "boolean",
+            "default": false,
+            "description": "响应内容是否流式返回：\n- `false`：模型生成完所有内容后一次性返回结果；\n- `true`：按 SSE 协议逐块返回模型生成内容，并以一条 `data: [DONE]` 消息结束。",
+            "examples": [false]
+          },
+          "stream_options": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/StreamOptionsParam"
+              }
+            ],
+            "description": "流式响应的选项。仅当 `stream: true` 时可以设置 `stream_options` 参数。"
+          },
+          "max_tokens": {
+            "type": "integer",
+            "default": 4096,
+            "description": "- **模型回复最大长度（单位 token），取值范围各个模型不同，详细见**[模型列表](https://www.volcengine.com/docs/82379/1330310)**。**\n- **输入 token 和输出 token 的总长度还受模型的上下文长度限制。**\n",
+            "examples": [4096]
+          },
+          "stop": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
                 }
+              }
+            ],
+            "description": "模型遇到 `stop` 字段所指定的字符串时将停止继续生成，这个词语本身不会输出。最多支持 4 个字符串。",
+            "examples": [["你好", "天气"]]
+          },
+          "frequency_penalty": {
+            "type": "number",
+            "format": "float",
+            "default": 0,
+            "description": "频率惩罚系数。如果值为正，会根据新 token 在文本中的出现频率对其进行惩罚，从而降低模型逐字重复的可能性。取值范围为 [-2.0, 2.0]。",
+            "examples": [1]
+          },
+          "presence_penalty": {
+            "type": "number",
+            "format": "float",
+            "default": 0,
+            "description": "存在惩罚系数。如果值为正，会根据新 token 到目前为止是否出现在文本中对其进行惩罚，从而增加模型谈论新主题的可能性。取值范围为 [-2.0, 2.0]。",
+            "examples": [1]
+          },
+          "temperature": {
+            "type": "number",
+            "format": "float",
+            "default": 1,
+            "description": "采样温度。控制了生成文本时对每个候选词的概率分布进行平滑的程度。取值范围为 [0, 1]。当取值为 0 时模型仅考虑对数概率最大的一个 token。较高的值（如 0.8）会使输出更加随机，而较低的值（如 0.2）会使输出更加集中确定。通常建议仅调整 `temperature` 或 `top_p` 其中之一，不建议两者都修改。",
+            "examples": [0.8]
+          },
+          "top_p": {
+            "type": "number",
+            "format": "float",
+            "default": 0.7,
+            "description": "核采样概率阈值。模型会考虑概率质量在 `top_p` 内的 token 结果。取值范围为 [0, 1]。当取值为 0 时模型仅考虑对数概率最大的一个 token。如 0.1 意味着只考虑概率质量最高的前 10% 的 token，取值越大生成的随机性越高，取值越低生成的确定性越高。通常建议仅调整 `temperature` 或 `top_p` 其中之一，不建议两者都修改。",
+            "examples": [0.8]
+          },
+          "logprobs": {
+            "type": "boolean",
+            "default": false,
+            "description": "是否返回输出 tokens 的对数概率：\n- `false`：不返回对数概率信息；\n- `true`：返回消息内容中每个输出 token 的对数概率。",
+            "examples": [false]
+          },
+          "top_logprobs": {
+            "type": "integer",
+            "default": 0,
+            "description": "指定每个输出 token 位置最有可能返回的 token 数量，每个 token 都有关联的对数概率。仅当 `logprobs: true` 时可以设置 `top_logprobs` 参数，取值范围为 [0, 20]。",
+            "examples": [2]
+          },
+          "logit_bias": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "integer"
             },
-            "ErrorResponse": {
-                "type": "object",
-                "properties": {
-                    "type": {
-                        "type": "string",
-                        "description": "错误类型",
-                        "example": "BadRequest"
-                    },
-                    "code": {
-                        "type": "string",
-                        "description": "错误代码",
-                        "example": "SensitiveContentDetected"
-                    },
-                    "message": {
-                        "type": "string",
-                        "description": "错误信息",
-                        "example": "The request failed because the input text may contain sensitive information."
-                    },
-                    "含义": {
-                        "type": "string",
-                        "description": "错误含义",
-                        "example": "输入文本可能包含敏感信息，请您使用其他 prompt。"
-                    }
-                }
-            }
+            "description": "调整指定 token 在模型输出内容中出现的概率，使模型生成的内容更加符合特定的偏好。`logit_bias` 字段接受一个 map 值，其中每个键为词表中的 token ID（使用 tokenization 接口获取），每个值为该 token 的偏差值，取值范围为 [-100, 100]。-1 会减少选择的可能性，1 会增加选择的可能性；-100 会完全禁止选择该 token，100 会导致仅可选择该 token。该参数的实际效果可能因模型而异。",
+            "examples": [
+              {
+                "1234": -100
+              }
+            ],
+            "properties": {}
+          },
+          "tools": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ToolParam"
+            },
+            "description": "模型可以调用的工具列表（参见[支持范围](https://www.volcengine.com/docs/82379/1262342#8c325d45)）。目前，仅函数作为工具被支持。用这个来提供模型可能为其生成 JSON 输入的函数列表。"
+          }
         }
-    }
+      },
+      "ToolParam": {
+        "type": "object",
+        "required": ["type", "function"],
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "工具类型，当前仅支持 `function`。",
+            "examples": ["function"]
+          },
+          "function": {
+            "$ref": "#/components/schemas/FunctionDefinition"
+          }
+        }
+      },
+      "FunctionDefinition": {
+        "type": "object",
+        "required": ["name"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "函数的名称。",
+            "examples": ["get_current_weather"]
+          },
+          "description": {
+            "type": "string",
+            "description": "对函数用途的描述，供模型判断何时以及如何调用该工具函数。",
+            "examples": ["获取指定城市的天气信息"]
+          },
+          "parameters": {
+            "type": "object",
+            "description": "函数请求参数，以 JSON Schema 格式描述。具体格式请参考 [JSON Schema](https://json-schema.org/understanding-json-schema) 文档。",
+            "examples": [
+              {
+                "type": "object",
+                "properties": {
+                  "location": {
+                    "type": "string",
+                    "description": "城市，如：北京"
+                  }
+                },
+                "required": ["location"]
+              }
+            ],
+            "properties": {}
+          }
+        }
+      },
+      "StreamOptionsParam": {
+        "type": "object",
+        "properties": {
+          "include_usage": {
+            "type": "boolean",
+            "default": false,
+            "description": "是否包含本次请求的 token 用量统计信息：\n- `false`：不返回 token 用量信息；\n- `true`：在 `data: [DONE]` 消息之前返回一个额外的块，此块上的 `usage` 字段代表整个请求的 token 用量，`choices` 字段为空数组。所有其他块也将包含 `usage` 字段，但值为 `null`。",
+            "examples": [false]
+          }
+        }
+      },
+      "FunctionParam": {
+        "type": "object",
+        "required": ["name", "arguments"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "模型需要调用的函数名称。",
+            "examples": ["get_current_weather"]
+          },
+          "arguments": {
+            "type": "string",
+            "description": "模型生成的用于调用函数的参数，JSON 格式。请注意，模型并不总是生成有效的 JSON，并且可能会虚构出一些您的函数参数规范中未定义的参数。在调用函数之前，请在您的代码中验证这些参数是否有效。",
+            "examples": ["{\"location\": \"Boston, MA\"}"]
+          }
+        }
+      },
+      "MessageToolCallParam": {
+        "type": "object",
+        "required": ["id", "type", "function"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "当前工具调用 ID。",
+            "examples": ["call_5y**********"]
+          },
+          "type": {
+            "type": "string",
+            "description": "工具类型，当前仅支持`function`。",
+            "examples": ["function"]
+          },
+          "function": {
+            "$ref": "#/components/schemas/FunctionParam"
+          }
+        }
+      },
+      "StreamResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "本次请求的唯一标识。",
+            "examples": ["02171804947"]
+          },
+          "model": {
+            "type": "string",
+            "description": "本次请求实际使用的模型名称和版本。Doubao 1.5 代模型的模型名称格式为 doubao-1-5-**，如调用部署doubao-1.5-pro-32k 250115模型的推理接入点，返回`model`字段信息doubao-1-5-pro-32k-250115。",
+            "examples": ["doubao-pro-4k-240515"]
+          },
+          "created": {
+            "type": "integer",
+            "description": "本次请求创建时间的 Unix 时间戳（秒）。",
+            "examples": [1718049470]
+          },
+          "object": {
+            "type": "string",
+            "description": "固定为 `chat.completion.chunk`。",
+            "examples": ["chat.completion.chunk"]
+          },
+          "choices": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/StreamChoice"
+            },
+            "description": "本次请求的模型输出内容。"
+          },
+          "usage": {
+            "$ref": "#/components/schemas/Usage"
+          }
+        }
+      },
+      "Usage": {
+        "type": "object",
+        "properties": {
+          "prompt_tokens": {
+            "type": "integer",
+            "description": "输入的 prompt token 数量。",
+            "examples": [130]
+          },
+          "completion_tokens": {
+            "type": "integer",
+            "description": "模型生成的 token 数量。",
+            "examples": [100]
+          },
+          "total_tokens": {
+            "type": "integer",
+            "description": "本次请求消耗的总 token 数量（输入 + 输出）。",
+            "examples": [230]
+          },
+          "prompt_tokens_details": {
+            "type": "object",
+            "description": "本接口暂不支持上下文缓存，此时返回应为`\"cached_tokens\": 0`。prompt_tokens中命中上下文缓存的tokens数。需要开通上下文缓存功能，并创建缓存才会启用，详细见[上下文缓存（Context API）概述](https://www.volcengine.com/docs/82379/1398933)。",
+            "examples": [
+              {
+                "cached_tokens": 0
+              }
+            ],
+            "properties": {}
+          },
+          "completion_tokens_details": {
+            "type": "object",
+            "description": "本次请求花费的 token 的细节。其中`reasoning_tokens`是指输出思维链内容花费的 token 。支持输出思维链的模型请参见[支持模型](https://www.volcengine.com/docs/82379/1449737#5f0f3750)。",
+            "examples": [
+              {
+                "reasoning_tokens": 0
+              }
+            ],
+            "properties": {}
+          }
+        }
+      },
+      "StreamChoice": {
+        "type": "object",
+        "properties": {
+          "index": {
+            "type": "integer",
+            "description": "当前元素在 `choices` 列表的索引。",
+            "examples": [0]
+          },
+          "finish_reason": {
+            "type": "string",
+            "description": "模型停止生成 token 的原因。可能的值包括：\n- `stop`：模型输出自然结束，或因命中请求参数 `stop` 中指定的字段而被截断；\n- `length`：模型输出因达到请求参数 `max_token` 指定的最大 token 数量而被截断；\n- `content_filter`：模型输出被内容审核拦截；\n- `tool_calls`：模型调用了工具。",
+            "examples": ["stop"]
+          },
+          "delta": {
+            "$ref": "#/components/schemas/ChoiceDelta"
+          },
+          "logprobs": {
+            "$ref": "#/components/schemas/ChoiceLogprobs"
+          }
+        }
+      },
+      "ChoiceLogprobs": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TokenLogprob"
+            },
+            "description": "`message`列表中每个 `content` 元素中的 token 对数概率信息。"
+          }
+        }
+      },
+      "TokenLogprob": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "description": "当前 token。",
+            "examples": ["The"]
+          },
+          "bytes": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            },
+            "description": "当前 token 的 UTF-8 值，格式为整数列表。当一个字符由多个 token 组成（表情符号或特殊字符等）时可以用于字符的编码和解码。如果 token 没有 UTF-8 值则为空。",
+            "examples": [[84, 104, 101]]
+          },
+          "logprob": {
+            "type": "number",
+            "format": "float",
+            "description": "当前 token 的对数概率。",
+            "examples": [-0.0155029296875]
+          },
+          "top_logprobs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TopLogprob"
+            },
+            "description": "在当前 token 位置最有可能的标记及其对数概率的列表。在一些情况下，返回的数量可能比请求参数 `top_logprobs` 指定的数量要少。"
+          }
+        }
+      },
+      "TopLogprob": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "description": "当前 token。",
+            "examples": ["The"]
+          },
+          "bytes": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            },
+            "description": "当前 token 的 UTF-8 值，格式为整数列表。当一个字符由多个 token 组成（表情符号或特殊字符等）时可以用于字符的编码和解码。如果 token 没有 UTF-8 值则为空。",
+            "examples": [[84, 104, 101]]
+          },
+          "logprob": {
+            "type": "number",
+            "format": "float",
+            "description": "当前 token 的对数概率。",
+            "examples": [-0.0155029296875]
+          }
+        }
+      },
+      "ChoiceDelta": {
+        "type": "object",
+        "properties": {
+          "role": {
+            "type": "string",
+            "description": "固定为 `assistant`。",
+            "examples": ["assistant"]
+          },
+          "content": {
+            "type": "string",
+            "description": "模型生成的消息内容，`content` 与 `tool_calls` 字段二者必有一个为非空。",
+            "examples": ["\"你好\""]
+          },
+          "tool_calls": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ChoiceDeltaToolCall"
+            },
+            "description": "模型生成的工具调用列表，`content` 与 `tool_calls` 字段二者必有一个为非空。"
+          }
+        }
+      },
+      "ChoiceDeltaToolCall": {
+        "type": "object",
+        "properties": {
+          "index": {
+            "type": "integer",
+            "description": "当前元素在 `tool_calls` 列表的索引。",
+            "examples": [0]
+          },
+          "id": {
+            "type": "string",
+            "description": "当前工具调用 ID。",
+            "examples": ["call_5y***********"]
+          },
+          "type": {
+            "type": "string",
+            "description": "工具类型，当前仅支持`function`。",
+            "examples": ["function"]
+          },
+          "function": {
+            "$ref": "#/components/schemas/Function"
+          }
+        }
+      },
+      "Function": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "模型需要调用的函数名称。",
+            "examples": ["get_current_weather"]
+          },
+          "arguments": {
+            "type": "string",
+            "description": "模型生成的用于调用函数的参数，JSON 格式。请注意，模型并不总是生成有效的 JSON，并且可能会虚构出一些您的函数参数规范中未定义的参数。在调用函数之前，请在您的代码中验证这些参数是否有效。",
+            "examples": ["{\"location\": \"Boston, MA\"}"]
+          }
+        }
+      },
+      "NonStreamResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "本次请求的唯一标识。",
+            "examples": ["02171********************"]
+          },
+          "model": {
+            "type": "string",
+            "description": "本次请求实际使用的模型名称和版本。Doubao 1.5 代模型的模型名称格式为 doubao-1-5-**，如调用部署doubao-1.5-pro-32k 250115模型的推理接入点，返回`model`字段信息doubao-1-5-pro-32k-250115。",
+            "examples": ["doubao-pro-4k-240515"]
+          },
+          "created": {
+            "type": "integer",
+            "description": "本次请求创建时间的 Unix 时间戳（秒）。",
+            "examples": [1718049470]
+          },
+          "object": {
+            "type": "string",
+            "description": "固定为 `chat.completion`。",
+            "examples": ["chat.completion"]
+          },
+          "choices": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Choice"
+            },
+            "description": "本次请求的模型输出内容。"
+          },
+          "usage": {
+            "$ref": "#/components/schemas/Usage"
+          }
+        }
+      },
+      "Choice": {
+        "type": "object",
+        "properties": {
+          "index": {
+            "type": "integer",
+            "description": "当前元素在 `choices` 列表的索引。",
+            "examples": [0]
+          },
+          "finish_reason": {
+            "type": "string",
+            "description": "模型停止生成 token 的原因。取值范围：\n- `stop`：模型输出自然结束，或因命中请求参数 `stop` 中指定的字段而被截断；\n- `length`：模型输出因达到请求参数 `max_token` 指定的最大 token 数量而被截断；\n- `content_filter`：模型输出被内容审核拦截；\n- `tool_calls`：模型调用了工具。",
+            "examples": ["stop"]
+          },
+          "message": {
+            "$ref": "#/components/schemas/Message"
+          },
+          "logprobs": {
+            "$ref": "#/components/schemas/ChoiceLogprobs"
+          }
+        }
+      },
+      "Message": {
+        "type": "object",
+        "properties": {
+          "role": {
+            "type": "string",
+            "description": "固定为 `assistant`。",
+            "examples": ["assistant"]
+          },
+          "content": {
+            "type": "string",
+            "description": "模型生成的消息内容，`content` 与 `tool_calls` 字段二者至少有一个为非空。",
+            "examples": ["\"你好\""]
+          },
+          "reasoning_content": {
+            "type": "string",
+            "description": "模型处理问题的思维链内容。支持返回此字段的模型请参见[支持模型](https://www.volcengine.com/docs/82379/1449737#5f0f3750)。",
+            "examples": [null]
+          },
+          "tool_calls": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MessageToolCall"
+            },
+            "description": "模型生成的工具调用，`content` 与 `tool_calls` 字段二者至少有一个为非空。"
+          }
+        }
+      },
+      "MessageToolCall": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "当前工具调用 ID。",
+            "examples": ["call_5y********"]
+          },
+          "type": {
+            "type": "string",
+            "description": "工具类型，当前仅支持`function`。",
+            "examples": ["function"]
+          },
+          "function": {
+            "$ref": "#/components/schemas/Function"
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "错误类型",
+            "examples": ["BadRequest"]
+          },
+          "code": {
+            "type": "string",
+            "description": "错误代码",
+            "examples": ["SensitiveContentDetected"]
+          },
+          "message": {
+            "type": "string",
+            "description": "错误信息",
+            "examples": [
+              "The request failed because the input text may contain sensitive information."
+            ]
+          },
+          "含义": {
+            "type": "string",
+            "description": "错误含义",
+            "examples": ["输入文本可能包含敏感信息，请您使用其他 prompt。"]
+          }
+        }
+      }
+    },
+    "securitySchemes": {}
+  },
+  "servers": [],
+  "security": []
 }
