@@ -1,0 +1,126 @@
+---
+title: '获取视频链接'
+openapi: get /contents/generations/tasks/{id}
+---
+<Tip>
+    本文供您查询接口 ContentsGenerationsTasks{id} 完整字段说明以及详细取值，如您需要了解视频生成服务如何调用以及使用事项，可以参考[视频生成教程](https://www.volcengine.com/docs/82379/1366799)。
+</Tip>
+
+<RequestExample>
+
+```shell Curl
+curl -X GET https://ark.cn-beijing.volces.com/api/v3/contents/generations/tasks/cgt-2024****-** \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer 59385462-****" 
+```
+
+```python Python SDK
+import os
+from volcenginesdkarkruntime import Ark
+
+# 请确保您已将 API Key 存储在环境变量 ARK_API_KEY 中
+# 初始化 Ark 客户端，从环境变量中读取您的 API Key
+client = Ark(
+    api_key=os.environ.get("ARK_API_KEY"),
+)
+
+# 假设这里已经知道了要查询的任务 ID
+task_id = "your_task_id_here"
+
+print("----- get request -----")
+# 获取任务详情
+get_result = client.content_generation.tasks.get(task_id=task_id)
+print(get_result)
+
+    
+```
+
+```go Go SDK
+package main
+
+import (
+    "context"
+    "fmt"
+    "github.com/volcengine/volcengine-go-sdk/volcengine"
+    "os"
+
+    "github.com/volcengine/volcengine-go-sdk/service/arkruntime"
+    "github.com/volcengine/volcengine-go-sdk/service/arkruntime/model"
+)
+
+func main() {
+    // 请确保您已将 API Key 存储在环境变量 ARK_API_KEY 中
+    // 初始化Ark客户端，从环境变量中读取您的API Key
+    client := arkruntime.NewClientWithApiKey(
+        // 从环境变量中获取您的 API Key。此为默认方式，您可根据需要进行修改
+        os.Getenv("ARK_API_KEY"),
+    )
+    ctx := context.Background()
+
+    // 这里假设你已经知道要查询的任务ID
+    taskID := "your_task_id" 
+
+    fmt.Println("----- get content generation task -----")
+    // 获取任务详情
+    getRequest := model.GetContentGenerationTaskRequest{ID: taskID}
+
+    getResponse, err := client.GetContentGenerationTask(ctx, getRequest)
+    if err!= nil {
+        fmt.Printf("get content generation task error: %v\n", err)
+        return
+    }
+
+    fmt.Printf("Task ID: %s\n", getResponse.ID)
+    fmt.Printf("Model: %s\n", getResponse.Model)
+    fmt.Printf("Status: %s\n", getResponse.Status)
+    fmt.Printf("Video URL: %s\n", getResponse.Content.VideoURL)
+    fmt.Printf("Completion Tokens: %d\n", getResponse.Usage.CompletionTokens)
+    fmt.Printf("Created At: %d\n", getResponse.CreatedAt)
+    fmt.Printf("Updated At: %d\n", getResponse.UpdatedAt)
+    if getResponse.Error!= nil {
+        fmt.Printf("Error Code: %s\n", getResponse.Error.Code)
+        fmt.Printf("Error Message: %s\n", getResponse.Error.Message)
+    }
+}
+```
+
+
+```java Java SDK
+package com.volcengine.ark.runtime;
+
+import com.volcengine.ark.runtime.model.content.generation.GetContentGenerationTaskRequest;
+import com.volcengine.ark.runtime.model.content.generation.GetContentGenerationTaskResponse;
+import com.volcengine.ark.runtime.service.ArkService;
+import okhttp3.ConnectionPool;
+import okhttp3.Dispatcher;
+
+import java.util.concurrent.TimeUnit;
+
+public class GetVideoGenerationTaskByIdExample {
+    // 请确保您已将 API Key 存储在环境变量 ARK_API_KEY 中
+    // 初始化Ark客户端，从环境变量中读取您的API Key
+    static String apiKey = System.getenv("ARK_API_KEY");
+    static ConnectionPool connectionPool = new ConnectionPool(5, 1, TimeUnit.SECONDS);
+    static Dispatcher dispatcher = new Dispatcher();
+    static ArkService service = ArkService.builder().dispatcher(dispatcher).connectionPool(connectionPool).apiKey(apiKey).build();
+
+    public static void main(String[] args) {
+        // 假设这里已经知道了要查询的任务ID
+        String taskId = "your_task_id_here";
+
+        System.out.println("----- GET Task Request -----");
+
+        // 获取任务详情
+        GetContentGenerationTaskRequest getRequest = GetContentGenerationTaskRequest.builder()
+              .taskId(taskId)
+              .build();
+
+        GetContentGenerationTaskResponse getResult = service.getContentGenerationTask(getRequest);
+        System.out.println(getResult);
+
+        service.shutdownExecutor();
+    }
+}
+```
+
+</RequestExample>

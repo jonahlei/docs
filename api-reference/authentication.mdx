@@ -1,5 +1,5 @@
 ---
-title: '鉴权方式'
+title: '鉴权'
 description: '为您介绍如何使用 API Key 或者 Access Key 鉴权方舟的 API '
 ---
 火山方舟 API 分为模型调用相关的<Tooltip tip="在云计算系统中实现数据的传输、处理与交互的编程接口，它让应用程序能够对数据进行读写、迁移、转换等操作，以保障业务流程里数据的正常流转与使用。">数据面 API</Tooltip>，以及管理推理接入点等管理云资源的<Tooltip tip="管控面 API 主要用于管理云资源，如虚拟机、存储、网络等。云服务提供商通常会提供一系列的管控面 API，让用户可以通过编程的方式自动化地创建、修改、删除和监控云资源。">管控面 API</Tooltip>。他们支持的鉴权方式有所不同，下面介绍方舟相关的 API 鉴权方式。
@@ -63,7 +63,6 @@ curl https://ark.cn-beijing.volces.com/api/v3/chat/completions \
 <span id="50f355e8"></span>
 ### 通过 Access Key
 <span id="47c0c590"></span>
-#### 前提条件
 1. 获取 Access Key：可参考[文档](https://www.volcengine.com/docs/6257/64983)。
 <Tip>
 由于主账号的 Access Key 拥有较大权限，为增强安全性，您可以创建 IAM 子账号的方式避免过度授权，具体实践可参考[使用IAM进行访问控制教程](https://www.volcengine.com/docs/82379/1263493)。

@@ -30,23 +30,41 @@
     },
 
     "tabs": [
-
       {
         "tab": "API 参考",
         "groups": [
           {
-            "group": " ",
-            "pages": [                
-                "api-reference/authentication",
-                "api-reference/error-codes"
+            "group": "简介",
+            "pages": [
+              "api-reference/authentication",
+              "api-reference/error-codes"
             ]
           },
           {
-            "group": "文本生成",
+            "group": "对话（Chat）",
             "pages": [
               "api-reference/endpoint/chatcompletions",
               "api-reference/endpoint/batchchatcompletions"
-
+            ]
+          },
+          {
+            "group": "视频",
+            "pages": [
+              "api-reference/endpoint/contentsgenerationstasks",
+              "api-reference/endpoint/getcontentsgenerationstasks{id}",
+              "api-reference/endpoint/getcontentsgenerationstasks",
+              "api-reference/endpoint/delcontentsgenerationstasks{id}"
+            ]
+          },
+          {
+            "group": "批量",
+            "pages": ["api-reference/endpoint/batchchatcompletions"]
+          },
+          {
+            "group": "上下文缓存",
+            "pages": [
+              "api-reference/endpoint/contextcreate",
+              "api-reference/endpoint/contextchatcompletions"
             ]
           }
         ]
@@ -62,7 +80,7 @@
       }
     },
     "examples": {
-        "languages": ["curl","python","go","java"]
+      "languages": ["curl", "python", "go", "java"]
     }
   },
   "logo": {
