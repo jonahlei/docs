@@ -30,15 +30,7 @@
     },
 
     "tabs": [
-      {
-        "tab": "教程",
-        "groups": [
-          {
-            "group": "开始使用",
-            "pages": ["introduction", "quickstart", "development"]
-          }
-        ]
-      },
+
       {
         "tab": "API 参考",
         "groups": [
@@ -52,7 +44,9 @@
           {
             "group": "文本生成",
             "pages": [
-              "api-reference/endpoint/chatcompletions"
+              "api-reference/endpoint/chatcompletions",
+              "api-reference/endpoint/batchchatcompletions"
+
             ]
           }
         ]
