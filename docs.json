@@ -51,9 +51,9 @@
             "group": "视频",
             "pages": [
               "api-reference/endpoint/contentsgenerationstasks",
-              "api-reference/endpoint/getcontentsgenerationstasks{id}",
+              "api-reference/endpoint/getcontentsgenerationstasksid",
               "api-reference/endpoint/getcontentsgenerationstasks",
-              "api-reference/endpoint/delcontentsgenerationstasks{id}"
+              "api-reference/endpoint/delcontentsgenerationstasksid"
             ]
           },
           {
