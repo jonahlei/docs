@@ -44,7 +44,8 @@
             "group": "对话（Chat）",
             "pages": [
               "api-reference/endpoint/chatcompletions",
-              "api-reference/endpoint/batchchatcompletions"
+              "api-reference/endpoint/batchchatcompletions",
+              "api-reference/endpoint/botschatcompletions"
             ]
           },
           {
@@ -66,6 +67,16 @@
               "api-reference/endpoint/contextcreate",
               "api-reference/endpoint/contextchatcompletions"
             ]
+          },
+          {
+            "group": "向量化",
+            "pages": [
+                "api-reference/endpoint/embeddings",
+                "api-reference/endpoint/embeddingsmultimodal"]
+          },
+          {
+            "group": "分词",
+            "pages": ["api-reference/endpoint/tokenization"]
           }
         ]
       }

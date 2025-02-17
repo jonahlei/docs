@@ -1,0 +1,186 @@
+{
+    "openapi": "3.1.0",
+    "info": {
+      "title": "Embeddings API",
+      "description": "将文本转换为高维向量表示，支持中英文语义编码",
+      "version": "1.0.0",
+      "contact": {
+        "url": "https://www.volcengine.com/docs/82379"
+      }
+    },
+    "paths": {
+      "/embeddings": {
+        "post": {
+          "operationId": "createEmbeddings",
+          "tags": ["语义向量化"],
+          "summary": "文本向量化处理",
+          "description": "支持单文本长度**4096 token** ，批量处理最大 **256条** 。",
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["model", "input"],
+                  "properties": {
+                    "model": {
+                      "type": "string",
+                      "description": "推理接入点ID\n- 格式：`ep-{时间}-{随机字符串}`\n- 获取推理接入点 ID，参考[文档](https://www.volcengine.com/docs/82379/1099522)",
+                      "example": "ep-202406040*****-*****"
+                    },
+                    "input": {
+                      "type": "array",
+                      "minItems": 1,
+                      "maxItems": 256,
+                      "items": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 100000,
+                        "description": "支持中英文混合输入\n- 禁止HTML标签\n- 需UTF-8编码"
+                      },
+                      "example": ["自然语言处理技术解析"]
+                    },
+                    "encoding_format": {
+                      "type": "string",
+                      "enum": ["float", "base64"],
+                      "default": "float",
+                      "description": "向量输出格式\n- `float`: 浮点数数组\n- `base64`: Base64编码"
+                    }
+                  }
+                },
+                "examples": {
+                  "basic": {
+                    "value": {
+                      "model": "ep-202406040*****-*****",
+                      "input": ["天很蓝", "海很深"]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "向量化成功响应",
+              "headers": {
+                "X-Embedding-Version": {
+                  "schema": {
+                    "type": "string",
+                    "example": "doubao-embedding-text-240515"
+                  }
+                }
+              },
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/EmbeddingResponse"
+                  },
+                  "examples": {
+                    "float": {
+                      "value": {
+                        "id": "021718067849899d92fcbe0865fdffdde",
+                        "created": 1718060000,
+                        "object": "list",
+                        "model": "doubao-embedding-text-240515",
+                        "data": [
+                          {
+                            "index": 0,
+                            "object": "embedding",
+                            "embedding": [2.372, 1.897, -0.033]
+                          }
+                        ],
+                        "usage": {
+                          "prompt_tokens": 7,
+                          "total_tokens": 7
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "components": {
+      "securitySchemes": {
+        "apiKeyAuth": {
+          "type": "apiKey",
+          "in": "header",
+          "name": "Authorization",
+          "description": "[鉴权认证方式](https://www.volcengine.com/docs/82379/1298459)",
+          "x-sdk-param": "api_key"
+        }
+      },
+      "schemas": {
+        "EmbeddingResponse": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "format": "uuid",
+              "description": "请求唯一追踪ID。",
+              "example": "021718049470528d92fcbe0865fdffdde"
+            },
+            "model": {
+              "type": "string",
+              "description": "实际调用的模型版本"
+            },
+            "created": {
+              "type": "integer",
+              "minimum": 1672502400,
+              "description": "请求创建时间戳\n- 时区：UTC+8",
+              "example": 1718049470
+            },
+            "data": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/Embedding"
+              }
+            },
+            "usage": {
+              "$ref": "#/components/schemas/Usage"
+            }
+          }
+        },
+        "Embedding": {
+          "type": "object",
+          "properties": {
+            "index": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "文本顺序索引\n- 对应请求参数input列表顺序"
+            },
+            "embedding": {
+              "type": "array",
+              "items": {
+                "type": "number",
+                "format": "float"
+              },
+              "description": "768维语义向量\n※ L2归一化处理结果"
+            }
+          }
+        },
+        "Usage": {
+          "type": "object",
+          "properties": {
+            "prompt_tokens": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "输入token消耗\n- 计费依据"
+            },
+            "total_tokens": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "总token消耗\n- 包含输入输出"
+            }
+          }
+        }
+      }
+    },
+    "externalDocs": {
+      "description": "错误码文档",
+      "url": "https://www.volcengine.com/docs/82379/1299023"
+    }
+  }

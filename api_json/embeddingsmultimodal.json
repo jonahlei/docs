@@ -1,0 +1,247 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Multimodal Embeddings API",
+    "description": "支持文本、图片及图文混合输入的向量化服务，适用于跨模态检索场景",
+    "version": "1.0.0",
+    "contact": {
+      "url": "https://www.volcengine.com/docs/82379"
+    }
+  },
+  "paths": {
+    "/embeddings/multimodal": {
+      "post": {
+        "operationId": "createMultimodalEmbeddings",
+        "tags": ["跨模态向量化"],
+        "summary": "多模态向量化处理",
+        "description": "支持 **8k token**文本输入 \n▸ 支持 **10 MB** 图片输入。",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["model", "input"],
+                "properties": {
+                  "model": {
+                    "type": "string",
+                    "pattern": "^ep-\\d{8}[a-zA-Z0-9*-]+$",
+                    "description": "推理接入点ID，创建方式参见[接入点文档](https://www.volcengine.com/docs/82379/1099522)",
+                    "example": "ep-202406040*****-*****"
+                  },
+                  "input": {
+                    "type": "array",
+                    "minItems": 1,
+                    "maxItems": 2,
+                    "items": {
+                      "oneOf": [
+                        {
+                          "$ref": "#/components/schemas/TextInput"
+                        },
+                        {
+                          "$ref": "#/components/schemas/ImageInput"
+                        }
+                      ]
+                    },
+                    "description": "混合输入规则：\n- 最多包含1个文本和1个图片\n- 输入顺序影响向量生成"
+                  },
+                  "encoding_format": {
+                    "type": "string",
+                    "enum": ["float", "base64"],
+                    "default": "float",
+                    "description": "向量输出格式选项：\n- `float`: 768维浮点数组\n- `base64`: Base64编码字符串"
+                  }
+                }
+              },
+              "examples": {
+                "mixed": {
+                  "value": {
+                    "model": "ep-202406040*****-*****",
+                    "input": [
+                      {
+                        "type": "text",
+                        "text": "蓝天白云下的城市景观"
+                      },
+                      {
+                        "type": "image_url",
+                        "image_url": {
+                          "url": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQ..."
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "向量化成功响应",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MultimodalEmbeddingResponse"
+                },
+                "examples": {
+                  "success": {
+                    "value": {
+                      "id": "021718067849899d92fcbe0865fdffdde",
+                      "created": 1718060000,
+                      "object": "list",
+                      "model": "doubao-embedding-vision-240601",
+                      "data": [
+                        {
+                          "embedding": [0.621, -0.691, 0.387],
+                          "object": "embedding"
+                        }
+                      ],
+                      "usage": {
+                        "prompt_tokens": 1340,
+                        "total_tokens": 1340,
+                        "prompt_tokens_details": {
+                          "text_tokens": 1312,
+                          "image_tokens": 28
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "apiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Authorization",
+        "description": "[鉴权认证方式](https://www.volcengine.com/docs/82379/1298459)",
+        "x-sdk-example": "Bearer {your_api_key}"
+      }
+    },
+    "schemas": {
+      "TextInput": {
+        "title": "文本输入",
+        "type": "object",
+        "required": ["type", "text"],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["text"],
+            "description": "输入类型标识，此处应为`text`"
+          },
+          "text": {
+            "type": "string",
+            "maxLength": 100000,
+            "description": "文本输入要求：\n- UTF-8编码\n- 禁止HTML标签\n- 最大 8k token",
+            "example": "城市天际线夜景"
+          }
+        }
+      },
+      "ImageInput": {
+        "title": "图片输入",
+        "type": "object",
+        "required": ["type", "image_url"],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["image_url"],
+            "description": "输入类型标识，此处应为`image_url`。"
+          },
+          "image_url": {
+            "type": "object",
+            "required": ["url"],
+            "properties": {
+              "url": {
+                "type": "string",
+                "format": "uri",
+                "description": "图片输入方式：\n- **URL格式**：`https://example.com/image.jpg`\n- **Base64格式**：`data:image/{格式};base64,{编码}` \n\n 详细格式说明，您可参考[图片格式说明](https://www.volcengine.com/docs/82379/1409290#%E5%9B%BE%E7%89%87%E6%A0%BC%E5%BC%8F%E8%AF%B4%E6%98%8E)。",
+                "example": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA..."
+              }
+            }
+          }
+        }
+      },
+      "MultimodalEmbeddingResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "request-id",
+            "description": "请求追踪ID\n- 格式：`时间戳(10位)-实例ID-随机数`"
+          },
+          "model": {
+            "type": "string",
+            "enum": ["doubao-embedding-vision-240601"],
+            "description": "实际调用的模型版本"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Embedding"
+            }
+          },
+          "usage": {
+            "$ref": "#/components/schemas/TokenUsage"
+          }
+        }
+      },
+      "Embedding": {
+        "type": "object",
+        "properties": {
+          "embedding": {
+            "type": "array",
+            "items": {
+              "type": "number",
+              "format": "float"
+            },
+            "description": "768维归一化向量\n> 已进行L2归一化处理",
+            "example": [0.621, -0.691, 0.387]
+          }
+        }
+      },
+      "TokenUsage": {
+        "type": "object",
+        "properties": {
+          "prompt_tokens": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "总token消耗量"
+          },
+          "prompt_tokens_details": {
+            "type": "object",
+            "properties": {
+              "text_tokens": {
+                "type": "integer",
+                "description": "文本token消耗\n> 包含系统预设prompt"
+              },
+              "image_tokens": {
+                "type": "integer",
+                "description": "图片token计算方式：`ceil(图片像素数 / 512)`"
+              }
+            }
+          }
+        }
+      }
+    },
+    "parameters": {
+      "ImageFormat": {
+        "in": "query",
+        "name": "format",
+        "schema": {
+          "type": "string",
+          "enum": ["jpeg", "png", "webp", "bmp"]
+        }
+      }
+    }
+  },
+  "externalDocs": {
+    "description": "图片格式规范文档",
+    "url": "https://www.volcengine.com/docs/82379/1409290#93dcee4d"
+  }
+}
