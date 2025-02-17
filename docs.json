@@ -63,7 +63,7 @@
           },
           {
             "group": "应用 bot",
-            "pages": ["api-reference/endpoint/batchchatcompletions"]
+            "pages": ["api-reference/endpoint/botschatcompletions"]
           },
           {
             "group": "批量推理",
