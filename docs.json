@@ -41,15 +41,13 @@
             ]
           },
           {
-            "group": "对话（Chat）",
+            "group": "对话 Chat",
             "pages": [
-              "api-reference/endpoint/chatcompletions",
-              "api-reference/endpoint/batchchatcompletions",
-              "api-reference/endpoint/botschatcompletions"
+              "api-reference/endpoint/chatcompletions"
             ]
           },
           {
-            "group": "视频",
+            "group": "视频生成",
             "pages": [
               "api-reference/endpoint/contentsgenerationstasks",
               "api-reference/endpoint/getcontentsgenerationstasksid",
@@ -58,7 +56,17 @@
             ]
           },
           {
-            "group": "批量",
+            "group": "向量化",
+            "pages": [
+                "api-reference/endpoint/embeddings",
+                "api-reference/endpoint/embeddingsmultimodal"]
+          },
+          {
+            "group": "应用 bot",
+            "pages": ["api-reference/endpoint/batchchatcompletions"]
+          },
+          {
+            "group": "批量推理",
             "pages": ["api-reference/endpoint/batchchatcompletions"]
           },
           {
@@ -67,12 +75,6 @@
               "api-reference/endpoint/contextcreate",
               "api-reference/endpoint/contextchatcompletions"
             ]
-          },
-          {
-            "group": "向量化",
-            "pages": [
-                "api-reference/endpoint/embeddings",
-                "api-reference/endpoint/embeddingsmultimodal"]
           },
           {
             "group": "分词",
