@@ -1,0 +1,86 @@
+---
+title: '快速入门'
+description: '使用 API 完成模型调用'
+---
+火山方舟 API 分为模型调用相关的<Tooltip tip="在云计算系统中实现数据的传输、处理与交互的编程接口，它让应用程序能够对数据进行读写、迁移、转换等操作，以保障业务流程里数据的正常流转与使用。">数据面 API</Tooltip>，以及管理推理接入点等管理云资源的<Tooltip tip="管控面 API 主要用于管理云资源，如虚拟机、存储、网络等。云服务提供商通常会提供一系列的管控面 API，让用户可以通过编程的方式自动化地创建、修改、删除和监控云资源。">管控面 API</Tooltip>。他们支持的鉴权方式有所不同，下面介绍方舟相关的 API 鉴权方式。
+<span id="0fed4817"></span>
+## 数据面 API 鉴权
+对于数据面的 API，如文本生成、深度理解等接口，您可以使用API 或者 Access Key 两种方式进行鉴权。
+<span id="60db1ed6"></span>
+### 通过 API Key
+<span id="6011c5a5"></span>
+如您使用 API Key 鉴权方式，请在 HTTP 请求 header 中按如下方式添加 `Authorization` 字段:
+```Shell
+Authorization: Bearer <ARK_API_KEY>
+```
+<span id="e8bd2618"></span>
+<Accordion title="调用示例">
+- 将 `<ARK_API_KEY>` 替换为您的API Key 。
+- 将 `<YOUR_ENDPOINT_ID>` 替换为您的推理接入点 ID 。
+```Shell curl {3}
+curl https://ark.cn-beijing.volces.com/api/v3/chat/completions \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <ARK_API_KEY>" \
+  -d '{
+    "model": "<YOUR_ENDPOINT_ID>",
+    "messages": [
+        {
+            "role": "system",
+            "content": "You are a helpful assistant."
+        },
+        {
+            "role": "user",
+            "content": "Hello!"
+        }
+    ]
+  }'
+```
+</Accordion>
+
+
+<span id="21bff83b"></span>
+### 通过 Access Key
+<span id="3ad1c414"></span>
+
+1. 获取 Access Key：可参考[文档](https://www.volcengine.com/docs/6257/64983)。
+<Tip>
+由于主账号的 Access Key 拥有较大权限，为增强安全性，您可以创建 IAM 子账号的方式避免过度授权，具体实践可参考[使用IAM进行访问控制教程](https://www.volcengine.com/docs/82379/1263493)。
+</Tip>
+2. 获取临时 API Key：[使用 Access Key 鉴权](#78351fef)调用 [`GetApiKey`](https://www.volcengine.com/docs/82379/1262825) 接口，获取临时 API Key。
+3. 使用临时 API Key：鉴权模型/应用调用，[方式同上](#60db1ed6)。
+
+<Tip>
+推荐您可使用方舟提供的 SDK 无需自行实现复杂的 API 签名。
+- [Python SDK](https://www.volcengine.com/docs/82379/1319847#61385def)
+- [Go SDK](https://www.volcengine.com/docs/82379/1319853#68185bfb)
+- [Java SDK](https://www.volcengine.com/docs/82379/1319854#5b9f723f)
+</Tip>
+
+
+<span id="bdd329d5"></span>
+## 管控面 API 鉴权
+对于管控面的 API，如管理API Key、管理推理接入点等接口，您可以使用 Access Key 鉴权。
+<span id="50f355e8"></span>
+### 通过 Access Key
+<span id="47c0c590"></span>
+1. 获取 Access Key：可参考[文档](https://www.volcengine.com/docs/6257/64983)。
+<Tip>
+由于主账号的 Access Key 拥有较大权限，为增强安全性，您可以创建 IAM 子账号的方式避免过度授权，具体实践可参考[使用IAM进行访问控制教程](https://www.volcengine.com/docs/82379/1263493)。
+</Tip>
+2. 使用 Access Key 构造签名，可参考[签名方法](https://www.volcengine.com/docs/6369/67269)。
+<Note>
+签名用到的方舟相关字段信息：
+* Service：`ark`
+* Region：`cn-beijing`
+</Note>
+3. 发起请求。请求示例如下：
+```Shell curl {3}
+curl -X POST \
+  'https://open.volcengineapi.com/?Action=ListEndpoints&Version=2024-01-01' \
+  -H 'Authorization: HMAC-SHA256 Credential=AKLTM2MyNzJhMGExZmFhNDI5YTgzMTI****************/20240710/cn-beijing/ark/request, SignedHeaders=host;x-content-sha256;x-date, Signature=a7a01ad627bcb9ef03bd708bf0f680873d99fa99c45fe8b4****************' \
+  -H 'Content-Type: application/json' \
+  -H 'Host: open.volcengineapi.com' \
+  -H 'X-Content-Sha256: 44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e83****************' \
+  -H 'X-Date: 20240710T042925Z' \
+  -d '{}'
+```
