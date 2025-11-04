@@ -1,0 +1,221 @@
+---
+title: "深度思考"
+description: "使用 API 调用模型深度思考能力，以及扩展使用方法。"
+---
+
+使用具备深度思考能力的模型，如 doubao thinking 系列模型，来提升最终答案的质量。模型在回答问题前，会对问题进行分析和拆解，并基于对问题的拆解回答问题，回答会更加全面和深入。当您向模型提问时，方舟返回模型回答问题前的问题思考逻辑（思维链内容），基于此可观察模型推导过程并使用这部分信息。
+
+> 访问 [ChatCompletions](../../api-reference/chat/chatcompletions) 接口文档，查询 API 参数说明。
+
+## 支持模型 
+
+当前支持深度思考的模型请参见[深度思考](/docs/82379/1330310#898d064d)。
+> 详细了解计费及下面长度限制规格的关系，可以阅读 [附2-工作原理](/docs/82379/1449737#a3986ddb)。
+
+
+## 前提条件 
+
+* [获取 API Key](https://console.volcengine.com/ark/region:ark+cn-beijing/apiKey)
+。 * 使用 Access Key 鉴权请参考[Access Key 签名鉴权](/docs/82379/1298459#21bff83b)。
+* [开通模型服务](https://console.volcengine.com/ark/region:ark+cn-beijing/openManagement?LLM=%7B%7D&OpenTokenDrawer=false)。
+* 在[模型列表](/docs/82379/1330310)获取所需 Model ID 。 * 通过 Endpoint ID 调用模型服务请参考[获取
+Endpoint ID（创建自定义推理接入点）](/docs/82379/1099522)。
+
+## 快速开始
+
+快速调用深度思考模型。
+
+> 其中注意使用下面命令将 API Key 配置为环境变量`ARK_API_KEY`。
+> `export ARK_API_KEY="<ARK_API_KEY>"`
+
+<Tabs>
+<Tab title="cURL">
+```cURL
+curl https://ark.cn-beijing.volces.com/api/v3/chat/completions \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer \$ARK_API_KEY" \
+  -d '{ 
+    "model": "doubao-seed-1-6-250615",
+    "messages": [
+        {
+            "role": "user",
+            "content": "我要研究深度思考模型与非深度思考模型区别的课题，怎么体现我的专业性"
+        }
+    ]
+  }'
+```
+</Tab>
+
+<Tab title="Python SDK">
+```Python
+import os
+# 升级方舟 SDK 到最新版本 pip install -U 'volcengine-python-sdk[ark]'
+from volcenginesdkarkruntime import Ark
+
+client = Ark( # 从环境变量中读取您的方舟 API Key
+api_key=os.environ.get("ARK_API_KEY"), # 深度思考模型耗费时间会较长，请您设置较大的超时时间，避免超时，推荐 30 分钟以上
+timeout=1800,
+)
+response = client.chat.completions.create( # 替换 <MODEL> 为 Model ID
+model="doubao-seed-1-6-250615",
+messages=[
+{"role": "user", "content": "我要研究深度思考模型与非深度思考模型区别的课题，怎么体现我的专业性"}
+]
+)
+
+# 当触发深度思考时，打印思维链内容
+
+if hasattr(response.choices[0].message, 'reasoning_content'):
+print(response.choices[0].message.reasoning_content)
+print(response.choices[0].message.content)
+
+```
+</Tab>
+
+
+<Tab title="Go SDK" >
+```Go
+package main
+
+import (
+    "context"
+    "fmt"
+    "os"
+    "time"
+
+    "github.com/volcengine/volcengine-go-sdk/service/arkruntime"
+    "github.com/volcengine/volcengine-go-sdk/service/arkruntime/model"
+    "github.com/volcengine/volcengine-go-sdk/volcengine"
+)
+
+func main() {
+    client := arkruntime.NewClientWithApiKey(
+        //通过 os.Getenv 从环境变量中获取 ARK_API_KEY
+        os.Getenv("ARK_API_KEY"),
+        //深度思考模型耗费时间会较长，请您设置较大的超时时间，避免超时导致任务失败。推荐30分钟以上
+        arkruntime.WithTimeout(30*time.Minute),
+    )
+    // 创建一个上下文，通常用于传递请求的上下文信息，如超时、取消等
+    ctx := context.Background()
+    // 构建聊天完成请求，设置请求的模型和消息内容
+    req := model.ChatCompletionRequest{
+        // 按需替换Model ID
+        Model: "doubao-seed-1-6-250615",
+        Messages: []*model.ChatCompletionMessage{
+            {
+                // 消息的角色为用户
+                Role: model.ChatMessageRoleUser,
+                Content: &model.ChatCompletionMessageContent{
+                    StringValue: volcengine.String("我要研究深度思考模型与非深度思考模型区别的课题，怎么体现我的专业性"),
+                },
+            },
+        },
+    }
+
+    // 发送聊天完成请求，并将结果存储在 resp 中，将可能出现的错误存储在 err 中
+    resp, err := client.CreateChatCompletion(ctx, req)
+    if err != nil {
+        // 若出现错误，打印错误信息并终止程序
+        fmt.Printf("standard chat error: %v\\n", err)
+        return
+    }
+    // 检查是否触发深度思考，触发则打印思维链内容
+    if resp.Choices[0].Message.ReasoningContent != nil {
+        fmt.Println(*resp.Choices[0].Message.ReasoningContent)
+    }
+    // 打印聊天完成请求的响应结果
+    fmt.Println(*resp.Choices[0].Message.Content.StringValue)
+}
+```
+
+</Tab>
+
+<Tab title="OpenAI Python SDK" >
+```Python
+import os
+from openai import OpenAI
+
+client = OpenAI( # 从环境变量中读取您的方舟 API Key
+api_key=os.environ.get("ARK_API_KEY"),
+base_url="https://ark.cn-beijing.volces.com/api/v3", # 深度思考模型耗费时间会较长，建议您设置一个较长的超时时间，推荐为 30 分钟
+timeout=1800,
+)
+response = client.chat.completions.create( # 按需替换 Model ID
+model="doubao-seed-1-6-250615",
+messages=[
+{"role": "user", "content": "我要研究深度思考模型与非深度思考模型区别的课题，怎么体现我的专业性"}
+]
+)
+
+# 当触发深度思考时，打印思维链内容
+
+if hasattr(response.choices[0].message, 'reasoning_content'):
+print(response.choices[0].message.reasoning_content)
+print(response.choices[0].message.content)
+
+```
+</Tab>
+
+
+<Tab title="Java SDK" >
+```Java
+package com.example;
+
+import com.volcengine.ark.runtime.model.completion.chat.ChatCompletionRequest;
+import com.volcengine.ark.runtime.model.completion.chat.ChatMessage;
+import com.volcengine.ark.runtime.model.completion.chat.ChatMessageRole;
+import com.volcengine.ark.runtime.service.ArkService;
+
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * 这是一个示例类，展示了如何使用ArkService来完成聊天功能。
+ */
+public class ChatCompletionsExample {
+    public static void main(String[] args) {
+        // 从环境变量中获取API密钥
+        String apiKey = System.getenv("ARK_API_KEY");
+        // 创建ArkService实例
+        ArkService arkService = ArkService.builder().apiKey(apiKey)
+                .timeout(Duration.ofMinutes(30))// 深度思考模型耗费时间会较长，请您设置较大的超时时间，避免超时导致任务失败。推荐30分钟以上
+                .build();
+        // 初始化消息列表
+        List<ChatMessage> chatMessages = new ArrayList<>();
+        // 创建用户消息
+        ChatMessage userMessage = ChatMessage.builder()
+                .role(ChatMessageRole.USER) // 设置消息角色为用户
+                .content("我要研究深度思考模型与非深度思考模型区别的课题，怎么体现我的专业性") // 设置消息内容
+                .build();
+        // 将用户消息添加到消息列表
+        chatMessages.add(userMessage);
+        //按需替换Model ID
+        ChatCompletionRequest chatCompletionRequest = ChatCompletionRequest.builder()
+                .model("doubao-seed-1-6-250615")
+                .messages(chatMessages) // 设置消息列表
+                .build();
+        // 发送聊天完成请求并打印响应
+        try {
+            // 获取响应并打印每个选择的消息内容
+            arkService.createChatCompletion(chatCompletionRequest)
+                    .getChoices()
+                    .forEach(choice -> {
+                        // 校验是否触发了深度思考，打印思维链内容
+                        if (choice.getMessage().getReasoningContent() != null) {
+                            System.out.println("推理内容: " + choice.getMessage().getReasoningContent());
+                        }
+                        // 打印消息内容
+                        System.out.println("消息内容: " + choice.getMessage().getContent());
+                    });
+        } catch (Exception e) {
+            System.out.println("请求失败: " + e.getMessage());
+        } finally {
+            // 关闭服务执行器
+            arkService.shutdownExecutor();
+        }
+    }
+}
+```
+</Tab>
+</Tabs>

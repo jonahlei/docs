@@ -1,7 +1,7 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "theme": "almond",
-  "name": "方舟模型服务平台",
+  "theme": "mint",
+  "name": "Seed 文档",
   "colors": {
     "primary": "#0084ff",
     "light": "#66b5ff",
@@ -9,115 +9,103 @@
   },
   "favicon": "/favicon.svg",
   "navigation": {
-    "global": {
-      "anchors": [
-        {
-          "anchor": "获取 API Key",
-          "href": "https://console.volcengine.com/ark/region:ark+cn-beijing/apiKey?apikey=%7B%7D",
-          "icon": "key"
-        }
-      ]
-    },
-    "tabs": [
+    "languages": [
       {
-        "tab": "Docs",
-        "groups": [
+        "language": "zh",
+        "tabs": [
           {
-            "group": "开始使用",
-            "pages": [
-              "docs/quickstart",
-              "docs/model_list"
+            "tab": "教程",
+            "groups": [
+              {
+                "group": "开始使用",
+                "pages": [
+                  "docs_zh/get_started/quickstart",
+                  "docs_zh/get_started/api_key",
+                  "docs_zh/get_started/model_list"
+                ]
+              },
+              {
+                "group": "开发指南",
+                "pages": [
+                  "docs_zh/developer_guide/deep_thinking",
+                  "docs_zh/developer_guide/visual_understanding",
+                  "docs_zh/developer_guide/image_generation",
+                  "docs_zh/developer_guide/video_generation",
+                  "docs_zh/developer_guide/text_generation"
+                ]
+              },
+              {
+                "group": "最佳实践",
+                "pages": [
+                  "docs_zh/best_practices/image_prompt_guide",
+                  "docs_zh/best_practices/video_prompt_guide"
+                ]
+              },
+              {
+                "group": "常见问题",
+                "pages": ["docs_zh/faq"]
+              },
+              {
+                "group": "法务协议",
+                "pages": ["docs_zh/legal/legal_agreement"]
+              }
             ]
           },
           {
-            "group": "开发指南",
-            "pages": [
-              "docs/developer_guide/deep_thinking",
-              "docs/developer_guide/visual_understanding",
-              "docs/developer_guide/image_generation",
-              "docs/developer_guide/video_generation",
-              "docs/developer_guide/text_generation"
+            "tab": "API 参考",
+            "groups": [
+              {
+                "group": "简介",
+                "pages": [
+                  "api_reference_zh/authentication",
+                  "api_reference_zh/error-codes",
+                  "api_reference_zh/rate_limiting"
+                ]
+              },
+              {
+                "group": "Chat API",
+                "openapi": "api_json_zh/openapi.json",
+                "pages": ["post /chat/completions"]
+              },
+              {
+                "group": "Responses API",
+                "openapi": "api_json_zh/openapi.json",
+                "pages": ["post /responses"]
+              },
+              {
+                "group": "图片生成",
+                "openapi": "api_json_zh/openapi.json",
+                "pages": ["post /images/generations"]
+              },
+              {
+                "group": "视频生成",
+                "openapi": "api_json_zh/openapi.json",
+                "pages": [
+                  "post /contents/generations/tasks",
+                  "get /contents/generations/tasks/{id}",
+                  "get /contents/generations/tasks",
+                  "delete /contents/generations/tasks/{id}"
+                ]
+              },
+              {
+                "group": "向量化",
+                "openapi": "api_json_zh/openapi.json",
+                "pages": ["post /embeddings", "post /embeddings/multimodal"]
+              },
+              {
+                "group": "openapi API",
+                "openapi": "api_json_zh/openai_documented.json"
+               
+              }
             ]
           },
           {
-            "group": "最佳实践",
-            "pages": [
-              "docs/best_practices/image_prompt_guide",
-              "docs/best_practices/video_prompt_guide"
-            ]
-          },
-          {
-            "group": "常见问题",
-            "pages": [
-              "docs/faq"
-            ]
-          },
-          {
-            "group": "法务协议",
-            "pages": [
-              "docs/legal/legal_agreement"
-            ]
-          }
-        ]
-      },
-      {
-        "tab": "API Reference",
-        "groups": [
-          {
-            "group": "简介",
-            "pages": [
-              "api_reference/authentication",
-              "api_reference/get_api_key",
-              "api_reference/error-codes",
-              "api_reference/rate_limiting"
-            ]
-          },
-          {
-            "group": "对话 Chat",
-            "pages": [
-              "api_reference/endpoint/chatcompletions",
-              "api_reference/endpoint/contextcreate",
-              "api_reference/endpoint/contextchatcompletions",
-              "api_reference/endpoint/batchchatcompletions"
-            ]
-          },
-          {
-            "group": "图片生成",
-            "pages": [
-              "api_reference/endpoint/images_generation_create",
-              "api_reference/endpoint/images_generation_query_id",
-              "api_reference/endpoint/images_generation_query_filters",
-              "api_reference/endpoint/images_generation_delete"
-            ]
-          },
-          {
-            "group": "视频生成",
-            "pages": [
-              "api_reference/endpoint/contents_generations_task"
-            ]
-          },
-          {
-            "group": "向量化",
-            "pages": [
-              "api_reference/endpoint/embeddings",
-              "api_reference/endpoint/embeddingsmultimodal"
-            ]
-          },
-          {
-            "group": "分词",
-            "pages": [
-              "api_reference/endpoint/tokenization"
-            ]
-          }
-        ]
-      },
-      {
-        "tab": "Release Notes",
-        "groups": [
-          {
-            "group": "模型更新记录",
-            "pages": [
-              "releasenotes/model_update_notes"
+            "tab": "发布说明",
+            "groups": [
+              {
+                "group": " ",
+                "pages": ["releasenotes_zh/releasenotes"]
+              }
             ]
           }
         ]
@@ -125,15 +113,18 @@
     ]
   },
   "api": {
+    "playground": {
+      "display": "interactive"
+    },
     "mdx": {
       "server": "https://ark.cn-beijing.volces.com/api/v3",
       "auth": {
-        "method": "key",
-        "name": "x-api-key"
+        "method": "bearer",
+        "name": "API Key"
       }
     },
     "examples": {
-      "languages": ["curl", "python", "node","go", "java"]
+      "languages": ["curl", "python", "javascript", "go", "java"]
     }
   },
   "logo": {
@@ -152,15 +143,6 @@
     "socials": { "github": "https://github.com/volcengine" }
   },
   "contextual": {
-   "options": [
-     "copy",
-     "view",
-     "chatgpt",
-     "claude",
-     "perplexity",
-     "mcp",
-     "cursor",
-     "vscode"
-   ]
- }
+    "options": ["copy", "view", "mcp", "vscode"]
+  }
 }

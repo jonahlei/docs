@@ -1,0 +1,108 @@
+---
+title: "获取 API Key"
+---
+
+# 获取 API Key
+
+API Key 是访问 Ark 开放平台各项服务的凭证，本文档将指导您如何获取、管理和安全使用 API Key。
+
+## 前提条件
+
+在获取 API Key 前，请确保您已完成以下准备工作：
+
+- 注册 Ark 开放平台账号
+- 完成个人或企业实名认证
+- 阅读并同意平台服务协议
+
+## 步骤一：访问 Ark 开放平台
+
+1. 打开浏览器，访问 [Ark 开放平台](https://seed.bytedance.com/zh/research)
+2. 使用您的账号登录平台
+
+## 步骤二：创建 API Key
+
+1. 登录成功后，点击右上角的用户头像，选择 "API 密钥管理"
+2. 在 API 密钥管理页面，点击 "创建新密钥"
+3. 为您的 API Key 添加描述性名称，便于后续管理（例如："开发环境密钥"、"生产环境密钥"）
+4. 选择适当的权限范围（根据您的需求选择不同的 API 访问权限）
+5. 点击 "确认创建"
+
+## 步骤三：保存 API Key
+
+1. 创建成功后，系统将显示您的 API Key 和 Secret Key
+2. **请立即复制并安全保存这些信息**，系统将不会再次显示完整的 Secret Key
+3. 点击 "已保存，继续" 完成创建流程
+
+## 安全使用建议
+
+API Key 包含敏感信息，请务必遵循以下安全实践：
+
+- **不要在代码中硬编码 API Key** - 应使用环境变量或配置文件管理
+- **不要提交 API Key 到版本控制系统** - 使用 `.env` 文件并将其添加到 `.gitignore`
+- **定期轮换密钥** - 建议每 3-6 个月更换一次密钥
+- **限制权限范围** - 仅授予必要的最小权限
+- **监控使用情况** - 定期查看 API 调用记录，及时发现异常活动
+- **妥善保管** - 避免分享给未授权人员
+
+## 使用示例
+
+### 在环境变量中配置 API Key
+
+```bash
+# 在 Linux/Mac 系统中
+ export ARK_API_KEY="your_api_key_here"
+
+# 在 Windows 系统中
+ set ARK_API_KEY="your_api_key_here"
+```
+
+### 在代码中使用 API Key
+
+```python
+# Python 示例
+import os
+import requests
+
+api_key = os.environ.get("ARK_API_KEY")
+url = "https://api.ark.com/v1/models"
+
+headers = {
+    "Authorization": f"Bearer {api_key}",
+    "Content-Type": "application/json"
+}
+
+response = requests.get(url, headers=headers)
+print(response.json())
+```
+
+## 管理 API Key
+
+您可以在 API 密钥管理页面执行以下操作：
+
+- **查看** - 查看 API Key 列表和基本信息
+- **禁用** - 临时禁用某个 API Key
+- **启用** - 重新启用已禁用的 API Key
+- **删除** - 永久删除不再使用的 API Key
+- **创建新密钥** - 生成新的 API Key
+
+## 常见问题
+
+### Q: API Key 泄露了怎么办？
+A: 立即在平台上删除泄露的密钥，并生成新的密钥替换使用。
+
+### Q: API Key 有使用限制吗？
+A: 是的，不同账号类型和服务套餐有不同的调用频率限制和配额限制。
+
+### Q: 可以创建多个 API Key 吗？
+A: 可以，建议为不同环境或应用创建单独的 API Key，便于管理和追踪。
+
+### Q: 如何查看 API 使用情况？
+A: 在平台的 "使用统计" 页面可以查看详细的 API 调用情况。
+
+## 联系我们
+
+如遇 API Key 相关问题，请通过以下方式联系技术支持：
+
+- 在线客服：平台右下角 "帮助与支持"
+- 邮箱：support@ark.com
+- 工单系统：登录平台后提交工单

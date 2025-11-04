@@ -1,0 +1,83 @@
+---
+title: '鉴权'
+description: '介绍调用模型服务时如何鉴权'
+---
+Seed 模型服务调用使用 API Key 鉴权，可在[控制台](https://console.volcengine.com/ark/overview/)获取。
+<Tip>
+您的API Key 是您的模型服务调用的凭证，请妥善保管，避免泄露。
+</Tip>
+API Key 可通过以下方式使用，具体可参见[文档](https://swagger.io/docs/specification/v3_0/authentication/bearer-authentication/)。
+```Shell
+Authorization: Bearer <ARK_API_KEY>
+```
+
+<Accordion title="调用示例">
+```Shell curl {3}
+curl https://ark.cn-beijing.volces.com/api/v3/chat/completions \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $ARK_API_KEY" \
+  -d '{
+    "model": "<MODEL>",
+    "messages": [
+        {
+            "role": "system",
+            "content": "You are a helpful assistant."
+        },
+        {
+            "role": "user",
+            "content": "Hello!"
+        }
+    ]
+  }'
+```
+- 将 `<MODEL>` 替换为您的需要使用的模型 ID 。
+- 读取环境变量中 `ARK_API_KEY` 变量的值，将 `$ARK_API_KEY` 替换为您的API Key 。
+</Accordion>
+
+
+<span id="21bff83b"></span>
+### 通过 Access Key
+<span id="3ad1c414"></span>
+
+1. 获取 Access Key：可参考[文档](https://www.volcengine.com/docs/6257/64983)。
+<Tip>
+由于主账号的 Access Key 拥有较大权限，为增强安全性，您可以创建 IAM 子账号的方式避免过度授权，具体实践可参考[使用IAM进行访问控制教程](https://www.volcengine.com/docs/82379/1263493)。
+</Tip>
+2. 获取临时 API Key：[使用 Access Key 鉴权](#78351fef)调用 [`GetApiKey`](https://www.volcengine.com/docs/82379/1262825) 接口，获取临时 API Key。
+3. 使用临时 API Key：鉴权模型/应用调用，[方式同上](#60db1ed6)。
+
+<Tip>
+推荐您可使用方舟提供的 SDK 无需自行实现复杂的 API 签名。
+- [Python SDK](https://www.volcengine.com/docs/82379/1319847#61385def)
+- [Go SDK](https://www.volcengine.com/docs/82379/1319853#68185bfb)
+- [Java SDK](https://www.volcengine.com/docs/82379/1319854#5b9f723f)
+</Tip>
+
+
+<span id="bdd329d5"></span>
+## 管控面 API 鉴权
+对于管控面的 API，如管理API Key、管理推理接入点等接口，您可以使用 Access Key 鉴权。
+<span id="50f355e8"></span>
+### 通过 Access Key
+<span id="47c0c590"></span>
+1. 获取 Access Key：可参考[文档](https://www.volcengine.com/docs/6257/64983)。
+<Tip>
+由于主账号的 Access Key 拥有较大权限，为增强安全性，您可以创建 IAM 子账号的方式避免过度授权，具体实践可参考[使用IAM进行访问控制教程](https://www.volcengine.com/docs/82379/1263493)。
+</Tip>
+2. 使用 Access Key 构造签名，可参考[签名方法](https://www.volcengine.com/docs/6369/67269)。
+<Note>
+签名用到的方舟相关字段信息：
+* Service：`ark`
+* Region：`cn-beijing`
+</Note>
+3. 发起请求。请求示例如下：
+```Shell curl {3}
+curl -X POST \
+  'https://open.volcengineapi.com/?Action=ListEndpoints&Version=2024-01-01' \
+  -H 'Authorization: HMAC-SHA256 Credential=AKLTM2MyNzJhMGExZmFhNDI5YTgzMTI****************/20240710/cn-beijing/ark/request, SignedHeaders=host;x-content-sha256;x-date, Signature=a7a01ad627bcb9ef03bd708bf0f680873d99fa99c45fe8b4****************' \
+  -H 'Content-Type: application/json' \
+  -H 'Host: open.volcengineapi.com' \
+  -H 'X-Content-Sha256: 44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e83****************' \
+  -H 'X-Date: 20240710T042925Z' \
+  -d '{}'
+```

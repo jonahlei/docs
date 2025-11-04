@@ -1,0 +1,1684 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Seed Model Service API",
+    "description": "The Seed Model Service API provides a series of endpoints for functionalities such as text generation, conversation, vector embedding, image generation, and video generation.",
+    "version": "v3",
+    "contact": {
+      "name": "Seed Official Website",
+      "url": "https://seed.bytedance.com/"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://ark.cn-beijing.volces.com/api/v3",
+      "description": "Seed Model Service API Base URL"
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "paths": {
+    "/chat/completions": {
+      "post": {
+        "summary": "Chat Completions",
+        "description": "Used to generate text responses and conduct conversations with text generation models and visual understanding models.",
+        "operationId": "chatCompletions",
+        "tags": ["Chat"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChatCompletionsRequest"
+              },
+              "examples": {
+                "basic": {
+                  "summary": "Basic conversation example",
+                  "value": {
+                    "model": "doubao-1-5-pro-32k-250115",
+                    "messages": [
+                      {
+                        "role": "user",
+                        "content": "你好，请介绍一下自己。"
+                      }
+                    ]
+                  }
+                },
+                "streaming": {
+                  "summary": "Streaming response example",
+                  "value": {
+                    "model": "doubao-1-5-pro-32k-250115",
+                    "messages": [
+                      {
+                        "role": "user",
+                        "content": "你好，请介绍一下自己。"
+                      }
+                    ],
+                    "stream": true
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChatCompletionsResponse"
+                }
+              },
+              "text/event-stream": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChatCompletionsStreamResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/responses": {
+      "post": {
+        "summary": "Responses",
+        "description": "Used to create model requests.",
+        "operationId": "createResponses",
+        "tags": ["Responses"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResponsesRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponsesResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/embeddings": {
+      "post": {
+        "summary": "Text Embedding",
+        "description": "Convert text content into vectors for tasks such as semantic retrieval and text analysis.",
+        "operationId": "createTextEmbeddings",
+        "tags": ["Embedding"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TextEmbeddingsRequest"
+              },
+              "examples": {
+                "basic": {
+                  "summary": "Basic text embedding example",
+                  "value": {
+                    "model": "doubao-embedding-1-0",
+                    "input": ["你好，世界！"]
+                  }
+                },
+                "multiple": {
+                  "summary": "Multiple text embedding example",
+                  "value": {
+                    "model": "doubao-embedding-1-0",
+                    "input": ["你好，世界！", "火山方舟提供强大的AI能力。"]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TextEmbeddingsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/embeddings/multimodal": {
+      "post": {
+        "summary": "Multimodal Embedding",
+        "description": "Convert video, image, and text content into vectors for multimedia content processing scenarios such as image search and semantic retrieval.",
+        "operationId": "createMultimodalEmbeddings",
+        "tags": ["Embedding"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MultimodalEmbeddingsRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MultimodalEmbeddingsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/images/generations": {
+      "post": {
+        "summary": "Image Generation",
+        "description": "Generate images based on text prompts.",
+        "operationId": "createImageGenerations",
+        "tags": ["Image Generation"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ImageGenerationsRequest"
+              },
+              "examples": {
+                "basic": {
+                  "summary": "Basic text-to-image example",
+                  "value": {
+                    "model": "doubao-seedream-3-0-t2i-250415",
+                    "prompt": "一只可爱的猫咪",
+                    "n": 1,
+                    "size": "1024x1024"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ImageGenerationsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/contents/generations/tasks": {
+      "post": {
+        "summary": "Create Video Generation Task",
+        "description": "Create asynchronous video generation tasks based on text descriptions (text-to-video) or combined with images (image-to-video).",
+        "operationId": "createVideoGenerationTask",
+        "tags": ["Video Generation"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateVideoGenerationTaskRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateVideoGenerationTaskResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "List Video Generation Tasks",
+        "description": "Query the list of video generation tasks that meet specific criteria. Only data from the last 7 days can be queried.",
+        "operationId": "listVideoGenerationTasks",
+        "tags": ["Video Generation"],
+        "parameters": [
+          {
+            "name": "page_num",
+            "in": "query",
+            "description": "Page number of the returned results, range [1, 500]",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 500
+            }
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "description": "Number of results returned per page, range [1, 500]",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 500
+            }
+          },
+          {
+            "name": "filter.status",
+            "in": "query",
+            "description": "Filter parameter for querying tasks with specific statuses",
+            "schema": {
+              "type": "string",
+              "enum": ["queued", "running", "cancelled", "succeeded", "failed"]
+            }
+          },
+          {
+            "name": "filter.task_ids",
+            "in": "query",
+            "description": "Video generation task IDs for exact search. Multiple task IDs can be passed, connected with &",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "explode": false,
+            "style": "form"
+          },
+          {
+            "name": "filter.model",
+            "in": "query",
+            "description": "Inference endpoint ID used by the task, for exact search",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListVideoGenerationTasksResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/contents/generations/tasks/{id}": {
+      "get": {
+        "summary": "Get Video Generation Task",
+        "description": "Query the status and result of a specific video generation task.",
+        "operationId": "getVideoGenerationTask",
+        "tags": ["Video Generation"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the video generation task to query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VideoGenerationTaskResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Task does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Cancel or Delete Video Generation Task",
+        "description": "Cancel or delete a specific video generation task.",
+        "operationId": "cancelOrDeleteVideoGenerationTask",
+        "tags": ["Video Generation"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the video generation task to cancel or delete",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Task does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "API Key",
+        "description": "Provide the API Key via the Authorization header. Format: `Bearer YOUR_API_KEY`"
+      }
+    },
+    "schemas": {
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "object",
+            "properties": {
+              "code": {
+                "type": "string",
+                "description": "Error code"
+              },
+              "message": {
+                "type": "string",
+                "description": "Error message"
+              }
+            },
+            "required": ["code", "message"]
+          }
+        },
+        "required": ["error"]
+      },
+      "Usage": {
+        "type": "object",
+        "properties": {
+          "prompt_tokens": {
+            "type": "integer",
+            "description": "Number of tokens in the prompt"
+          },
+          "completion_tokens": {
+            "type": "integer",
+            "description": "Number of tokens in the completion"
+          },
+          "total_tokens": {
+            "type": "integer",
+            "description": "Total number of tokens used (prompt + completion)"
+          }
+        },
+        "required": ["prompt_tokens", "completion_tokens", "total_tokens"]
+      },
+      "ChatCompletionsRequest": {
+        "type": "object",
+        "properties": {
+          "model": {
+            "type": "string",
+            "description": "ID of the model or inference endpoint to call. You need to activate the model service and query the ID first."
+          },
+          "messages": {
+            "type": "array",
+            "description": "List of conversation messages, including historical conversation information.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "role": {
+                  "type": "string",
+                  "enum": ["system", "user", "assistant", "tool"],
+                  "description": "Role of the message"
+                },
+                "content": {
+                  "oneOf": [
+                    {
+                      "type": "string",
+                      "description": "Text content of the message"
+                    },
+                    {
+                      "type": "array",
+                      "description": "Array of multimodal content",
+                      "items": {
+                        "oneOf": [
+                          {
+                            "type": "object",
+                            "properties": {
+                              "type": {
+                                "type": "string",
+                                "enum": ["text"],
+                                "description": "Content type is text"
+                              },
+                              "text": {
+                                "type": "string",
+                                "description": "Text content"
+                              }
+                            },
+                            "required": ["type", "text"]
+                          },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "type": {
+                                "type": "string",
+                                "enum": ["image_url"],
+                                "description": "Content type is image URL"
+                              },
+                              "image_url": {
+                                "type": "object",
+                                "properties": {
+                                  "url": {
+                                    "type": "string",
+                                    "description": "URL or Base64 encoding of the image"
+                                  }
+                                },
+                                "required": ["url"]
+                              }
+                            },
+                            "required": ["type", "image_url"]
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "description": "Content of the message, which can be a string or an array of multimodal content"
+                },
+                "name": {
+                  "type": "string",
+                  "description": "Name of the message, used to distinguish different messages"
+                },
+                "tool_call_id": {
+                  "type": "string",
+                  "description": "ID of the tool call, used when the role is 'tool'"
+                }
+              },
+              "required": ["role", "content"]
+            }
+          },
+          "stream": {
+            "type": "boolean",
+            "description": "Whether to return the response in streaming mode. true for streaming, false for one-time return.",
+            "default": false
+          },
+          "stream_options": {
+            "type": "object",
+            "description": "Configuration options for streaming responses, effective when stream is true.",
+            "properties": {
+              "include_usage": {
+                "type": "boolean",
+                "description": "Return usage at the end"
+              },
+              "chunk_include_usage": {
+                "type": "boolean",
+                "description": "Return cumulative usage for each chunk"
+              }
+            }
+          },
+          "max_tokens": {
+            "type": "integer",
+            "description": "Maximum length of the model's response (in tokens). Different models have different upper limits.",
+            "default": 4096
+          },
+          "max_completion_tokens": {
+            "type": "integer",
+            "description": "Controls the maximum length of the model's output (including thought chain and response content). Mutually exclusive with max_tokens."
+          },
+          "temperature": {
+            "type": "number",
+            "description": "Sampling temperature, controlling randomness. Range [0, 2]. It is recommended to adjust only one of temperature or top_p.",
+            "minimum": 0,
+            "maximum": 2,
+            "default": 1
+          },
+          "top_p": {
+            "type": "number",
+            "description": "Nucleus sampling probability threshold. Range [0, 1].",
+            "minimum": 0,
+            "maximum": 1,
+            "default": 0.7
+          },
+          "response_format": {
+            "type": "object",
+            "description": "Specifies the format of the model's output content.",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": ["text", "json_object", "json_schema"],
+                "description": "Output format type"
+              },
+              "schema": {
+                "type": "object",
+                "description": "Defines the structure of JSON when type is json_schema"
+              }
+            },
+            "required": ["type"]
+          },
+          "tools": {
+            "type": "array",
+            "description": "List of tools for Function Calling functionality.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "enum": ["function"],
+                  "description": "Tool type"
+                },
+                "function": {
+                  "type": "object",
+                  "description": "Function definition",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "description": "Function name"
+                    },
+                    "description": {
+                      "type": "string",
+                      "description": "Function description"
+                    },
+                    "parameters": {
+                      "type": "object",
+                      "description": "JSON Schema definition of function parameters"
+                    }
+                  },
+                  "required": ["name", "parameters"]
+                }
+              },
+              "required": ["type", "function"]
+            }
+          },
+          "tool_choice": {
+            "oneOf": [
+              {
+                "type": "string",
+                "enum": ["auto", "none"],
+                "description": "Tool selection strategy"
+              },
+              {
+                "type": "object",
+                "description": "Specifies the tool to use",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": ["function"],
+                    "description": "Tool type"
+                  },
+                  "function": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "description": "Function name"
+                      }
+                    },
+                    "required": ["name"]
+                  }
+                },
+                "required": ["type", "function"]
+              }
+            ],
+            "description": "Controls how the model uses tools. 'auto' means the model can independently choose whether to use tools, 'none' means not to use tools."
+          },
+          "seed": {
+            "type": "integer",
+            "description": "Random seed, used to control the randomness of generated content."
+          }
+        },
+        "required": ["model", "messages"]
+      },
+      "ChatCompletionsResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier for the completion"
+          },
+          "model": {
+            "type": "string",
+            "description": "Name and version of the model used for this request"
+          },
+          "created": {
+            "type": "integer",
+            "description": "Unix timestamp (in seconds) when the completion was created"
+          },
+          "object": {
+            "type": "string",
+            "enum": ["chat.completion"],
+            "description": "Object type, always 'chat.completion'"
+          },
+          "choices": {
+            "type": "array",
+            "description": "Array of completion choices. Usually contains only one element unless specified otherwise.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "index": {
+                  "type": "integer",
+                  "description": "Index of the choice in the array"
+                },
+                "message": {
+                  "type": "object",
+                  "properties": {
+                    "role": {
+                      "type": "string",
+                      "enum": ["assistant"],
+                      "description": "Role of the message, always 'assistant' for responses"
+                    },
+                    "content": {
+                      "type": ["string", "null"],
+                      "description": "Content of the message. Can be null when using tools."
+                    },
+                    "tool_calls": {
+                      "type": "array",
+                      "description": "Array of tool calls if the model decides to call tools",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "description": "ID of the tool call"
+                          },
+                          "type": {
+                            "type": "string",
+                            "enum": ["function"],
+                            "description": "Type of the tool call"
+                          },
+                          "function": {
+                            "type": "object",
+                            "properties": {
+                              "name": {
+                                "type": "string",
+                                "description": "Function name"
+                              },
+                              "arguments": {
+                                "type": "string",
+                                "description": "JSON string of function parameters"
+                              }
+                            },
+                            "required": ["name", "arguments"]
+                          }
+                        },
+                        "required": ["id", "type", "function"]
+                      }
+                    }
+                  },
+                  "required": ["role"]
+                },
+                "finish_reason": {
+                  "type": "string",
+                  "enum": ["stop", "length", "tool_calls", "content_filter"],
+                  "description": "Reason why the model stopped generating"
+                },
+                "logprobs": {
+                  "type": ["object", "null"],
+                  "description": "Log probabilities of tokens if requested"
+                }
+              },
+              "required": ["index", "message", "finish_reason"]
+            }
+          },
+          "usage": {
+            "$ref": "#/components/schemas/Usage"
+          }
+        },
+        "required": ["id", "model", "created", "object", "choices", "usage"]
+      },
+      "ChatCompletionsStreamResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier for the completion"
+          },
+          "model": {
+            "type": "string",
+            "description": "Name and version of the model used for this request"
+          },
+          "created": {
+            "type": "integer",
+            "description": "Unix timestamp (in seconds) when the completion was created"
+          },
+          "object": {
+            "type": "string",
+            "enum": ["chat.completion.chunk"],
+            "description": "Object type, always 'chat.completion.chunk' for streaming responses"
+          },
+          "choices": {
+            "type": "array",
+            "description": "Array of completion choices. Usually contains only one element unless specified otherwise.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "index": {
+                  "type": "integer",
+                  "description": "Index of the choice in the array"
+                },
+                "delta": {
+                  "type": "object",
+                  "description": "Incremental content in this chunk",
+                  "properties": {
+                    "role": {
+                      "type": "string",
+                      "enum": ["assistant"],
+                      "description": "Role of the message, always 'assistant' for responses"
+                    },
+                    "content": {
+                      "type": ["string", "null"],
+                      "description": "Incremental content of the message. Can be null when using tools."
+                    },
+                    "tool_calls": {
+                      "type": "array",
+                      "description": "Array of incremental tool calls if the model decides to call tools",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "index": {
+                            "type": "integer",
+                            "description": "Index of the tool call in the array"
+                          },
+                          "id": {
+                            "type": "string",
+                            "description": "ID of the tool call"
+                          },
+                          "type": {
+                            "type": "string",
+                            "enum": ["function"],
+                            "description": "Type of the tool call"
+                          },
+                          "function": {
+                            "type": "object",
+                            "properties": {
+                              "name": {
+                                "type": "string",
+                                "description": "Function name"
+                              },
+                              "arguments": {
+                                "type": "string",
+                                "description": "Incremental JSON string of function parameters"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "finish_reason": {
+                  "type": ["string", "null"],
+                  "enum": ["stop", "length", "tool_calls", "content_filter", null],
+                  "description": "Reason why the model stopped generating, provided in the last chunk"
+                }
+              },
+              "required": ["index", "delta"]
+            }
+          },
+          "usage": {
+            "$ref": "#/components/schemas/Usage",
+            "description": "Provided only in the last chunk of the stream, if stream_options.include_usage is true"
+          }
+        },
+        "required": ["id", "model", "created", "object", "choices"]
+      },
+      "ResponsesRequest": {
+        "type": "object",
+        "properties": {
+          "model": {
+            "type": "string",
+            "description": "ID of the model or inference endpoint to call"
+          },
+          "input": {
+            "oneOf": [
+              {
+                "type": "string",
+                "description": "Input text"
+              },
+              {
+                "type": "array",
+                "description": "Array of input texts",
+                "items": {
+                  "type": "string"
+                }
+              },
+              {
+                "type": "object",
+                "description": "Structured input object",
+                "additionalProperties": true
+              }
+            ],
+            "description": "Model input, which can be a string, an array of strings, or an object"
+          },
+          "parameters": {
+            "type": "object",
+            "description": "Model parameters",
+            "additionalProperties": true
+          },
+          "stream": {
+            "type": "boolean",
+            "description": "Whether to return the response in streaming mode",
+            "default": false
+          }
+        },
+        "required": ["model", "input"]
+      },
+      "ResponsesResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier for the response"
+          },
+          "model": {
+            "type": "string",
+            "description": "Name and version of the model used for this request"
+          },
+          "created": {
+            "type": "integer",
+            "description": "Unix timestamp (in seconds) when the response was created"
+          },
+          "object": {
+            "type": "string",
+            "description": "Object type"
+          },
+          "output": {
+            "type": ["string", "object", "array"],
+            "description": "Output of the model, format depends on the model"
+          },
+          "usage": {
+            "$ref": "#/components/schemas/Usage"
+          }
+        },
+        "required": ["id", "model", "created", "object", "output", "usage"]
+      },
+      "TextEmbeddingsRequest": {
+        "type": "object",
+        "properties": {
+          "model": {
+            "type": "string",
+            "description": "ID of the model or inference endpoint to call"
+          },
+          "input": {
+            "type": "array",
+            "description": "List of texts to convert into vectors",
+            "items": {
+              "type": "string"
+            }
+          },
+          "encoding_format": {
+            "type": "string",
+            "enum": ["float", "base64"],
+            "description": "Vector encoding format",
+            "default": "float"
+          }
+        },
+        "required": ["model", "input"]
+      },
+      "TextEmbeddingsResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier for the embeddings"
+          },
+          "model": {
+            "type": "string",
+            "description": "Name and version of the model used for this request"
+          },
+          "object": {
+            "type": "string",
+            "enum": ["list"],
+            "description": "Object type, always 'list'"
+          },
+          "data": {
+            "type": "array",
+            "description": "Array of embedding data",
+            "items": {
+              "type": "object",
+              "properties": {
+                "object": {
+                  "type": "string",
+                  "enum": ["embedding"],
+                  "description": "Object type, always 'embedding'"
+                },
+                "embedding": {
+                  "type": "array",
+                  "description": "Array of floats representing the text embedding",
+                  "items": {
+                    "type": "number"
+                  }
+                },
+                "index": {
+                  "type": "integer",
+                  "description": "Position of this embedding in the input array"
+                }
+              },
+              "required": ["object", "embedding", "index"]
+            }
+          },
+          "usage": {
+            "type": "object",
+            "properties": {
+              "prompt_tokens": {
+                "type": "integer",
+                "description": "Number of tokens in the prompt"
+              },
+              "total_tokens": {
+                "type": "integer",
+                "description": "Total number of tokens used"
+              }
+            },
+            "required": ["prompt_tokens", "total_tokens"]
+          }
+        },
+        "required": ["id", "model", "object", "data", "usage"]
+      },
+      "MultimodalEmbeddingsRequest": {
+        "type": "object",
+        "properties": {
+          "model": {
+            "type": "string",
+            "description": "ID of the model or inference endpoint to call"
+          },
+          "input": {
+            "type": "array",
+            "description": "List of multimodal content to convert into vectors",
+            "items": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "enum": ["image", "text"],
+                  "description": "Content type"
+                },
+                "image": {
+                  "type": "string",
+                  "description": "URL or Base64 encoding of the image, used when type is image"
+                },
+                "text": {
+                  "type": "string",
+                  "description": "Text content, used when type is text"
+                }
+              },
+              "required": ["type"]
+            }
+          },
+          "encoding_format": {
+            "type": "string",
+            "enum": ["float", "base64"],
+            "description": "Vector encoding format",
+            "default": "float"
+          }
+        },
+        "required": ["model", "input"]
+      },
+      "MultimodalEmbeddingsResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier for the embeddings"
+          },
+          "model": {
+            "type": "string",
+            "description": "Name and version of the model used for this request"
+          },
+          "object": {
+            "type": "string",
+            "enum": ["list"],
+            "description": "Object type, always 'list'"
+          },
+          "data": {
+            "type": "array",
+            "description": "Array of embedding data",
+            "items": {
+              "type": "object",
+              "properties": {
+                "object": {
+                  "type": "string",
+                  "enum": ["embedding"],
+                  "description": "Object type, always 'embedding'"
+                },
+                "embedding": {
+                  "type": "array",
+                  "description": "Array of floats representing the multimodal content embedding",
+                  "items": {
+                    "type": "number"
+                  }
+                },
+                "index": {
+                  "type": "integer",
+                  "description": "Position of this embedding in the input array"
+                }
+              },
+              "required": ["object", "embedding", "index"]
+            }
+          },
+          "usage": {
+            "type": "object",
+            "properties": {
+              "prompt_tokens": {
+                "type": "integer",
+                "description": "Number of tokens in the prompt"
+              },
+              "total_tokens": {
+                "type": "integer",
+                "description": "Total number of tokens used"
+              }
+            },
+            "required": ["prompt_tokens", "total_tokens"]
+          }
+        },
+        "required": ["id", "model", "object", "data", "usage"]
+      },
+      "ImageGenerationsRequest": {
+        "type": "object",
+        "properties": {
+          "model": {
+            "type": "string",
+            "description": "ID of the model or inference endpoint to call, currently only doubao-seedream-3-0-t2i-250415 is supported"
+          },
+          "prompt": {
+            "type": "string",
+            "description": "Text description used to generate the image"
+          },
+          "n": {
+            "type": "integer",
+            "description": "Number of images to generate",
+            "minimum": 1,
+            "maximum": 10,
+            "default": 1
+          },
+          "size": {
+            "type": "string",
+            "description": "Size of the generated image, in the format 'widthxheight'",
+            "enum": ["1024x1024", "1024x1792", "1792x1024"],
+            "default": "1024x1024"
+          },
+          "response_format": {
+            "type": "string",
+            "description": "Format of the generated image",
+            "enum": ["url", "b64_json"],
+            "default": "url"
+          },
+          "style": {
+            "type": "string",
+            "description": "Style of the generated image",
+            "enum": ["vivid", "natural"],
+            "default": "vivid"
+          },
+          "quality": {
+            "type": "string",
+            "description": "Quality of the generated image",
+            "enum": ["standard", "hd"],
+            "default": "standard"
+          },
+          "seed": {
+            "type": "integer",
+            "description": "Random seed, used to control the randomness of generated content"
+          }
+        },
+        "required": ["model", "prompt"]
+      },
+      "ImageGenerationsResponse": {
+        "type": "object",
+        "properties": {
+          "created": {
+            "type": "integer",
+            "description": "Unix timestamp (in seconds) when the image was created"
+          },
+          "data": {
+            "type": "array",
+            "description": "Array of generated image data",
+            "items": {
+              "type": "object",
+              "properties": {
+                "url": {
+                  "type": "string",
+                  "description": "URL of the generated image, provided when response_format is url"
+                },
+                "b64_json": {
+                  "type": "string",
+                  "description": "Base64 encoding of the generated image, provided when response_format is b64_json"
+                },
+                "revised_prompt": {
+                  "type": "string",
+                  "description": "Revised prompt if the original prompt was modified"
+                }
+              }
+            }
+          }
+        },
+        "required": ["created", "data"]
+      },
+      "CreateVideoGenerationTaskRequest": {
+        "type": "object",
+        "properties": {
+          "model": {
+            "type": "string",
+            "description": "ID of the model or inference endpoint to call"
+          },
+          "prompt": {
+            "type": "string",
+            "description": "Text description used to generate the video"
+          },
+          "negative_prompt": {
+            "type": "string",
+            "description": "Negative prompt, specifying content not desired in the generated video"
+          },
+          "image": {
+            "type": "string",
+            "description": "Image URL or Base64 encoding for image-to-video generation"
+          },
+          "callback_url": {
+            "type": "string",
+            "description": "Callback URL, a POST request will be sent to this URL after the task is completed"
+          },
+          "duration": {
+            "type": "integer",
+            "description": "Duration of the generated video (in seconds)"
+          },
+          "resolution": {
+            "type": "string",
+            "description": "Resolution of the generated video, e.g., '512x512'"
+          },
+          "ratio": {
+            "type": "string",
+            "description": "Aspect ratio of the generated video, e.g., '1:1'"
+          },
+          "framepersecond": {
+            "type": "integer",
+            "description": "Frame rate of the generated video"
+          },
+          "seed": {
+            "type": "integer",
+            "description": "Random seed, used to control the randomness of generated content"
+          }
+        },
+        "required": ["model", "prompt"]
+      },
+      "CreateVideoGenerationTaskResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier for the video generation task"
+          },
+          "model": {
+            "type": "string",
+            "description": "Name and version of the model used for this request"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["queued", "running", "cancelled", "succeeded", "failed"],
+            "description": "Task status"
+          },
+          "error": {
+            "type": ["object", "null"],
+            "description": "Error information returned when the task fails, null when successful",
+            "properties": {
+              "code": {
+                "type": "string",
+                "description": "Error code"
+              },
+              "message": {
+                "type": "string",
+                "description": "Error prompt"
+              }
+            }
+          },
+          "created_at": {
+            "type": "integer",
+            "description": "Unix timestamp (in seconds) when the task was created"
+          },
+          "updated_at": {
+            "type": "integer",
+            "description": "Unix timestamp (in seconds) when the task status was last updated"
+          },
+          "content": {
+            "type": ["object", "null"],
+            "description": "Output when the task is successful, containing the download URL of the generated video",
+            "properties": {
+              "video_url": {
+                "type": "string",
+                "description": "URL of the generated video. Note: For information security, the generated video will be cleaned up after 24 hours, please save it in time."
+              }
+            }
+          },
+          "seed": {
+            "type": "integer",
+            "description": "Seed integer value used for this request"
+          },
+          "resolution": {
+            "type": "string",
+            "description": "Resolution of the generated video"
+          },
+          "ratio": {
+            "type": "string",
+            "description": "Aspect ratio of the generated video"
+          },
+          "duration": {
+            "type": "integer",
+            "description": "Duration of the generated video (in seconds)"
+          },
+          "framepersecond": {
+            "type": "integer",
+            "description": "Frame rate of the generated video"
+          },
+          "usage": {
+            "type": "object",
+            "description": "Token usage information for this request"
+          }
+        },
+        "required": ["id", "model", "status", "created_at", "updated_at"]
+      },
+      "VideoGenerationTaskResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier for the video generation task"
+          },
+          "model": {
+            "type": "string",
+            "description": "Name and version of the model used for this request"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["queued", "running", "cancelled", "succeeded", "failed"],
+            "description": "Task status"
+          },
+          "error": {
+            "type": ["object", "null"],
+            "description": "Error information returned when the task fails, null when successful",
+            "properties": {
+              "code": {
+                "type": "string",
+                "description": "Error code"
+              },
+              "message": {
+                "type": "string",
+                "description": "Error prompt"
+              }
+            }
+          },
+          "created_at": {
+            "type": "integer",
+            "description": "Unix timestamp (in seconds) when the task was created"
+          },
+          "updated_at": {
+            "type": "integer",
+            "description": "Unix timestamp (in seconds) when the task status was last updated"
+          },
+          "content": {
+            "type": ["object", "null"],
+            "description": "Output when the task is successful, containing the download URL of the generated video",
+            "properties": {
+              "video_url": {
+                "type": "string",
+                "description": "URL of the generated video. Note: For information security, the generated video will be cleaned up after 24 hours, please save it in time."
+              }
+            }
+          },
+          "seed": {
+            "type": "integer",
+            "description": "Seed integer value used for this request"
+          },
+          "resolution": {
+            "type": "string",
+            "description": "Resolution of the generated video"
+          },
+          "ratio": {
+            "type": "string",
+            "description": "Aspect ratio of the generated video"
+          },
+          "duration": {
+            "type": "integer",
+            "description": "Duration of the generated video (in seconds)"
+          },
+          "framepersecond": {
+            "type": "integer",
+            "description": "Frame rate of the generated video"
+          },
+          "usage": {
+            "type": "object",
+            "description": "Token usage information for this request"
+          }
+        },
+        "required": ["id", "model", "status", "created_at", "updated_at"]
+      },
+      "ListVideoGenerationTasksResponse": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "integer",
+            "description": "Total number of tasks matching the filter criteria"
+          },
+          "items": {
+            "type": "array",
+            "description": "List of found video generation tasks",
+            "items": {
+              "$ref": "#/components/schemas/VideoGenerationTaskResponse"
+            }
+          }
+        },
+        "required": ["total", "items"]
+      }
+    }
+  }
+}

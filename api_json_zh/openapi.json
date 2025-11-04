@@ -1,0 +1,2978 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Seed 模型服务 API",
+    "description": "Seed 模型服务 API 提供了一系列端点，用于文本生成、对话、向量嵌入、图像生成和视频生成等功能。",
+    "version": "v3",
+    "contact": {
+      "name": "Seed 官网",
+      "url": "https://seed.bytedance.com/"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://ark.cn-beijing.volces.com/api/v3",
+      "description": "Seed 模型服务 API Base URL"
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "paths": {
+    "/chat/completions": {
+      "post": {
+        "summary": "ChatCompletions",
+        "description": "用于生成文本响应和与文本生成模型及视觉理解模型进行对话。",
+        "operationId": "chatCompletions",
+        "tags": ["Chat"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChatCompletionsRequest"
+              },
+              "examples": {
+                "basic": {
+                  "summary": "基本对话示例",
+                  "value": {
+                    "model": "seed-1-5-pro-32k-250115",
+                    "messages": [
+                      {
+                        "role": "user",
+                        "content": "你好，请介绍一下自己。"
+                      }
+                    ]
+                  }
+                },
+                "streaming": {
+                  "summary": "流式响应示例",
+                  "value": {
+                    "model": "seed-1-5-pro-32k-250115",
+                    "messages": [
+                      {
+                        "role": "user",
+                        "content": "你好，请介绍一下自己。"
+                      }
+                    ],
+                    "stream": true
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功响应",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChatCompletionsResponse"
+                }
+              },
+              "text/event-stream": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChatCompletionsStreamResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "请求参数错误",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "认证失败",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "服务器内部错误",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/responses": {
+      "post": {
+        "summary": "Responses",
+        "description": "用于创建模型请求。",
+        "operationId": "createResponses",
+        "tags": ["Responses"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResponsesRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功响应",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponsesResponse"
+                }
+              },
+              "text/event-stream": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponsesStreamResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "请求参数错误",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "认证失败",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "服务器内部错误",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/embeddings": {
+      "post": {
+        "summary": "文本向量化",
+        "description": "将文本内容转换为向量，用于语义检索、文本分析等任务。",
+        "operationId": "createTextEmbeddings",
+        "tags": ["向量化"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TextEmbeddingsRequest"
+              },
+              "examples": {
+                "basic": {
+                  "summary": "基本文本向量化示例",
+                  "value": {
+                    "model": "seed-embedding-1-0",
+                    "input": ["你好，世界！"]
+                  }
+                },
+                "multiple": {
+                  "summary": "多文本向量化示例",
+                  "value": {
+                    "model": "seed-embedding-1-0",
+                    "input": ["你好，世界！", "Seed提供强大的AI能力。"]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功响应",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TextEmbeddingsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "请求参数错误",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "认证失败",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "服务器内部错误",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/embeddings/multimodal": {
+      "post": {
+        "summary": "图像向量化",
+        "description": "将视频、图像和文本内容转换为向量，用于图像搜索、语义检索等多媒体内容处理场景。",
+        "operationId": "createMultimodalEmbeddings",
+        "tags": ["向量化"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MultimodalEmbeddingsRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功响应",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MultimodalEmbeddingsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "请求参数错误",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "认证失败",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "服务器内部错误",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/images/generations": {
+      "post": {
+        "summary": "图片生成",
+        "description": "根据文本提示生成图像。",
+        "operationId": "createImageGenerations",
+        "tags": ["图片生成"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ImageGenerationsRequest"
+              },
+              "examples": {
+                "basic": {
+                  "summary": "基本文生图示例",
+                  "value": {
+                    "model": "seed-seedream-3-0-t2i-250415",
+                    "prompt": "一只可爱的猫咪",
+                    "n": 1,
+                    "size": "1024x1024"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功响应",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ImageGenerationsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "请求参数错误",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "认证失败",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "服务器内部错误",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/contents/generations/tasks": {
+      "post": {
+        "summary": "创建视频生成任务",
+        "description": "根据文本描述（文生视频）或结合图像（图生视频）创建异步视频生成任务。",
+        "operationId": "createVideoGenerationTask",
+        "tags": ["视频生成"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateVideoGenerationTaskRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功响应",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateVideoGenerationTaskResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "请求参数错误",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "认证失败",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "服务器内部错误",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "查询视频生成任务列表",
+        "description": "查询符合特定条件的视频生成任务列表。仅支持查询最近7天的数据。",
+        "operationId": "listVideoGenerationTasks",
+        "tags": ["视频生成"],
+        "parameters": [
+          {
+            "name": "page_num",
+            "in": "query",
+            "description": "返回结果的页码，范围 [1, 500]",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 500
+            }
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "description": "每页返回的结果数量，范围 [1, 500]",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 500
+            }
+          },
+          {
+            "name": "filter.status",
+            "in": "query",
+            "description": "用于查询特定状态任务的过滤参数",
+            "schema": {
+              "type": "string",
+              "enum": ["queued", "running", "cancelled", "succeeded", "failed"]
+            }
+          },
+          {
+            "name": "filter.task_ids",
+            "in": "query",
+            "description": "用于精确搜索的视频生成任务ID。支持传递多个任务ID，用 & 连接",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "explode": false,
+            "style": "form"
+          },
+          {
+            "name": "filter.model",
+            "in": "query",
+            "description": "任务使用的推理终端ID，用于精确搜索",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功响应",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListVideoGenerationTasksResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "请求参数错误",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "认证失败",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "服务器内部错误",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/contents/generations/tasks/{id}": {
+      "get": {
+        "summary": "查询视频生成任务",
+        "description": "查询特定视频生成任务的状态和结果。",
+        "operationId": "getVideoGenerationTask",
+        "tags": ["视频生成"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "要查询的视频生成任务的ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功响应",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VideoGenerationTaskResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "请求参数错误",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "认证失败",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "任务不存在",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "服务器内部错误",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "取消或删除视频生成任务",
+        "description": "取消或删除特定的视频生成任务。",
+        "operationId": "cancelOrDeleteVideoGenerationTask",
+        "tags": ["视频生成"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "需要取消或者删除的视频生成任务。",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功响应",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {},
+                  "description": "本接口无返回参数"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "请求参数错误",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "认证失败",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "任务不存在",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "服务器内部错误",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "API Key",
+        "description": "API Key，用于访问模型服务。"
+      }
+    },
+    "schemas": {
+      "Caching": {
+        "title": "缓存设置",
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["enabled", "disabled"],
+            "description": "`enabled`：开启缓存。 `disabled`：关闭缓存。"
+          }
+        },
+        "required": ["type"]
+      },
+      "ChatCompletionsRequest": {
+        "title": "ChatCompletionsRequest",
+        "type": "object",
+        "properties": {
+          "messages": {
+            "description": "到目前为止的对话组成的消息列表。不同模型支持不同类型的消息，如文本、图片、视频等。",
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "$ref": "#/components/schemas/ChatCompletionRequestMessage"
+            }
+          },
+          "model": {
+            "type": "string",
+            "description": "您需要调用的模型的 ID （Model ID），[开通模型服务](https://console.volcengine.com/ark/region:ark+cn-beijing/openManagement?LLM=%7B%7D&OpenTokenDrawer=false)，并[查询 Model ID](https://www.volcengine.com/docs/82379/1330310) 。\n您也可通过 Endpoint ID 来调用模型，获得限流、计费类型（前付费/后付费）、运行状态查询、监控、安全等高级能力，可参考[获取 Endpoint ID](https://www.volcengine.com/docs/82379/1099522)。"
+          },
+          "thinking": {
+            "$ref": "#/components/schemas/Thinking"
+          },
+          "stream": {
+            "type": "boolean",
+            "default": false,
+            "nullable": true,
+            "description": "响应内容是否流式返回：\n\n* `false`：模型生成完所有内容后一次性返回结果。\n* `true`：按 SSE 协议逐块返回模型生成内容，并以一条 `data: [DONE] `消息结束。当 **stream** 为 `true` 时，可设置 **stream_options** 字段以获取 token 用量统计信息。"
+          },
+          "stream_options": {
+            "$ref": "#/components/schemas/StreamOptions"
+          },
+          "max_tokens": {
+            "type": "integer",
+            "default": 4096,
+            "nullable": true,
+            "description": "模型回答最大长度（单位 token）。\n * 模型回答不包含思维链内容。模型回答 = 模型输出 - 模型思维链（如有）\n* 输出 token 的总长度还受模型的上下文长度限制。\n"
+          },
+          "max_completion_tokens": {
+            "type": "integer",
+            "nullable": true,
+            "description": "控制模型输出的最大长度（包括模型回答和模型思维链内容长度，单位 token）。配置了该参数后，可以让模型输出超长内容，**max_tokens** （默认值 4k）与思维链最大长度将失效，模型按需输出内容，直到达到 **max_completion_tokens** 配置的值。\n不可与 **max_tokens** 字段同时设置，会直接报错。"
+          },
+          "service_tier": {
+            "$ref": "#/components/schemas/ServiceTier"
+          },
+          "stop": {
+            "anyOf": [
+              {
+                "type": "string",
+                "example": "\n",
+                "nullable": true
+              },
+              {
+                "type": "array",
+                "minItems": 1,
+                "maxItems": 4,
+                "items": {
+                  "type": "string"
+                }
+              }
+            ],
+            "nullable": true,
+            "description": "模型遇到 `stop` 字段所指定的字符串时将停止继续生成，这个词语本身不会输出。最多支持 4 个字符串。"
+          },
+          "reasoning_effort": {
+            "type": "string",
+            "default": "medium",
+            "nullable": true,
+            "enum": ["low", "medium", "high"],
+            "description": "限制深度思考的工作量。减少深度思考工作量可使响应速度更快，并且深度思考的 token 用量更小。\n> 仅[深度思考能力模型](https://www.volcengine.com/docs/82379/1330310#%E8%A7%86%E8%A7%89%E7%90%86%E8%A7%A3%E8%83%BD%E5%8A%9B)支持该字段。"
+          },
+          "response_format": {
+            "$ref": "#/components/schemas/ResponseFormat",
+            "nullable": true
+          },
+          "frequency_penalty": {
+            "type": "number",
+            "format": "float",
+            "nullable": true,
+            "minimum": -2,
+            "maximum": 2,
+            "default": 0,
+            "description": "频率惩罚系数。如果值为正，会根据新 token 在文本中的出现频率对其进行惩罚，从而降低模型逐字重复的可能性。"
+          },
+          "presence_penalty": {
+            "type": "number",
+            "format": "float",
+            "nullable": true,
+            "minimum": -2,
+            "maximum": 2,
+            "default": 0,
+            "description": "存在惩罚系数。如果值为正，会根据新 token 到目前为止是否出现在文本中对其进行惩罚，从而增加模型谈论新主题的可能性。"
+          },
+          "temperature": {
+            "type": "number",
+            "format": "float",
+            "nullable": true,
+            "minimum": 0,
+            "maximum": 2,
+            "default": 1,
+            "description": "采样温度。控制了生成文本时对每个候选词的概率分布进行平滑的程度。当取值为 0 时模型仅考虑对数概率最大的一个 token。\n较高的值（如 0.8）会使输出更加随机，而较低的值（如 0.2）会使输出更加确定性。"
+          },
+          "top_p": {
+            "type": "number",
+            "format": "float",
+            "nullable": true,
+            "minimum": 0,
+            "maximum": 1,
+            "default": 1,
+            "description": "一种替代温度采样的方法，称为核采样，模型会考虑概率质量为 top_p 的 token 的结果。因此，0.1 表示只考虑构成前 10% 概率质量的 token。"
+          },
+          "logprobs": {
+            "description": "是否返回输出 tokens 的对数概率。\n - `false`：不返回对数概率信息。\n - `true`：返回消息内容中每个输出 token 的对数概率。",
+            "type": "boolean",
+            "default": false,
+            "nullable": true
+          },
+          "top_logprobs": {
+            "description": "指定每个输出 token 位置最有可能返回的 token 数量，每个 token 都有关联的对数概率。仅当 logprobs为true 时可以设置 top_logprobs 参数。",
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 20,
+            "nullable": true
+          },
+          "logit_bias": {
+            "type": "object",
+            "default": null,
+            "nullable": true,
+            "example": "{\"1234\": -100}",
+            "description": "调整指定 token 在模型输出内容中出现的概率，使模型生成的内容更加符合特定的偏好。logit_bias 字段接受一个 map 值，其中每个键为词表中的 token ID（使用 tokenization 接口获取），每个值为该 token 的偏差值，取值范围为 [-100, 100]。\n -1 会减少选择的可能性，1 会增加选择的可能性；-100 会完全禁止选择该 token，100 会导致仅可选择该 token。该参数的实际效果可能因模型而异。"
+          },
+          "tools": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Tool"
+            },
+            "description": "模型可能调用的工具列表。"
+          },
+          "tool_choice": {
+            "$ref": "#/components/schemas/ChatCompletionToolChoiceOption"
+          },
+          "parallel_tool_calls": {
+            "$ref": "#/components/schemas/ParallelToolCalls"
+          }
+        },
+        "required": ["model", "messages"]
+      },
+      "ChatCompletionRequestMessage": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/ChatCompletionRequestSystemMessage"
+          },
+          {
+            "$ref": "#/components/schemas/ChatCompletionRequestUserMessage"
+          },
+          {
+            "$ref": "#/components/schemas/ChatCompletionRequestAssistantMessage"
+          },
+          {
+            "$ref": "#/components/schemas/ChatCompletionRequestToolMessage"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "role"
+        }
+      },
+      "ChatCompletionRequestSystemMessage": {
+        "title": "系统消息",
+        "type": "object",
+        "description": "开发人员提供的指令，模型应遵循这些指令。如模型扮演的角色或者目标等。",
+        "properties": {
+          "role": {
+            "type": "string",
+            "const": "system",
+            "description": "发送消息的角色，此处应为`system`。",
+            "default": "system",
+            "enum": ["system"]
+          },
+          "content": {
+            "description": "系统信息内容。",
+            "anyOf": [
+              {
+                "type": "string",
+                "description": "纯文本消息内容。",
+                "title": "纯文本消息内容，大语言模型支持传入此类型。"
+              },
+              {
+                "type": "array",
+                "description": "支持文本、图像、视频等类型，视觉理解模型等多模态模型、部分大语言模型支持此字段。",
+                "title": "多模态消息内容",
+                "items": {
+                  "$ref": "#/components/schemas/ChatCompletionRequestMessageContentPart"
+                },
+                "minItems": 1
+              }
+            ]
+          }
+        },
+        "required": ["role", "content"]
+      },
+      "ChatCompletionRequestUserMessage": {
+        "title": "用户消息",
+        "type": "object",
+        "description": "用户发送的消息，包含提示或附加上下文信息。不同模型支持的字段类型不同，最多支持文本、图片、视频形式的消息。",
+        "properties": {
+          "role": {
+            "type": "string",
+            "const": "user",
+            "description": "发送消息的角色，此处应为`user`。",
+            "default": "user",
+            "enum": ["user"]
+          },
+          "content": {
+            "oneOf": [
+              {
+                "description": "纯文本消息内容，大语言模型支持传入此类型。",
+                "type": "string"
+              },
+              {
+                "description": "支持文本、图像、视频等类型，视觉理解模型等多模态模型、部分大语言模型支持此字段。",
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/ChatCompletionRequestMessageContentPart"
+                }
+              }
+            ],
+            "description": "用户信息内容。"
+          }
+        },
+        "required": ["role", "content"]
+      },
+      "ChatCompletionRequestAssistantMessage": {
+        "title": "模型消息",
+        "type": "object",
+        "properties": {
+          "role": {
+            "type": "string",
+            "const": "assistant",
+            "description": "发送消息的角色，此处应为`assistant`。",
+            "default": "assistant",
+            "enum": ["assistant"]
+          },
+          "content": {
+            "type": "string",
+            "nullable": true,
+            "description": "模型回复的消息。"
+          },
+          "tool_calls": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ToolCall"
+            },
+            "description": "历史对话中，模型回复的工具调用信息。"
+          }
+        },
+        "required": ["role"]
+      },
+      "ChatCompletionRequestToolMessage": {
+        "title": "工具消息",
+        "type": "object",
+        "properties": {
+          "role": {
+            "type": "string",
+            "const": "tool",
+            "description": "发送消息的角色，此处应为`tool`。",
+            "default": "tool",
+            "enum": ["tool"]
+          },
+          "content": {
+            "type": "string",
+            "description": "工具返回的消息。"
+          },
+          "tool_call_id": {
+            "type": "string",
+            "description": "模型调用的工具的 ID。"
+          }
+        },
+        "required": ["role", "content", "tool_call_id"]
+      },
+      "ChatCompletionRequestMessageContentPart": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/TextPart"
+          },
+          {
+            "$ref": "#/components/schemas/ImagePart"
+          },
+          {
+            "$ref": "#/components/schemas/VideoPart"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "type"
+        }
+      },
+      "TextPart": {
+        "title": "文本消息部分",
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "const": "text",
+            "description": "文本消息类型，此处应为 `text`。",
+            "default": "text",
+            "enum": ["text"]
+          },
+          "text": {
+            "type": "string",
+            "description": "文本消息部分的内容。"
+          }
+        },
+        "required": ["type", "text"]
+      },
+      "ImagePart": {
+        "title": "图像消息部分",
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "const": "image_url",
+            "description": "图像消息类型，此处应为 `image_url`。",
+            "default": "image_url",
+            "enum": ["image_url"]
+          },
+          "image_url": {
+            "$ref": "#/components/schemas/ImageUrl"
+          }
+        },
+        "required": ["type", "image_url"]
+      },
+      "ImageUrl": {
+        "title": "图片消息内容",
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "支持传入图片链接或图片的Base64编码，具体使用请参见[使用说明](https://www.volcengine.com/docs/82379/1362931#%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E)。"
+          },
+          "detail": {
+            "type": "string",
+            "enum": ["auto", "high", "low"],
+            "default": "auto",
+            "description": "支持手动设置图片的质量，取值范围`high`、`low`、`auto`。"
+          },
+          "image_pixel_limit": {
+            "type": "object",
+            "properties": {
+              "max_pixels": {
+                "type": "integer"
+              },
+              "min_pixels": {
+                "type": "integer"
+              }
+            }
+          }
+        },
+        "required": ["url"]
+      },
+      "VideoPart": {
+        "title": "视频消息部分",
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "const": "video_url",
+            "description": "视频消息类型，此处应为`video_url`。",
+            "default": "video_url",
+            "enum": ["video_url"]
+          },
+          "video_url": {
+            "$ref": "#/components/schemas/VideoUrl"
+          }
+        },
+        "required": ["type", "video_url"]
+      },
+      "VideoUrl": {
+        "title": "视频消息内容",
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "支持传入视频链接或视频的Base64编码。具体使用请参见[视频理解说明](https://www.volcengine.com/docs/82379/1362931#%E8%A7%86%E9%A2%91%E7%90%86%E8%A7%A3)。"
+          },
+          "fps": {
+            "type": "number",
+            "format": "float",
+            "minimum": 0.2,
+            "maximum": 5,
+            "default": 1,
+            "description": "每秒钟从视频中抽取指定数量的图像。取值越高，对于视频中画面变化理解越精细；取值越低，对于视频中画面变化感知减弱，但是使用的 token 花费少，速度也更快。"
+          }
+        },
+        "required": ["url"]
+      },
+      "Thinking": {
+        "title": "深度思考模式",
+        "type": "object",
+        "description": "控制模型是否开启深度思考模式，可以手动开关。",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["enabled", "disabled", "auto"],
+            "description": "`enabled`：开启思考模式，模型一定先思考后回答。\n`disabled`：关闭思考模式，模型直接回答问题，不会进行思考。\n`auto`：自动思考模式，模型根据问题自主判断是否需要思考，简单题目直接回答。"
+          }
+        },
+        "required": ["type"],
+        "nullable": true,
+        "default": " {\"type\": \"enabled\"}"
+      },
+      "StreamOptions": {
+        "title": "流式响应选项",
+        "type": "object",
+        "nullable": true,
+        "properties": {
+          "include_usage": {
+            "type": "boolean",
+            "default": false,
+            "description": "模型流式输出时，是否在输出结束前输出本次请求的 token 用量信息。\n`true`：在 `data: [DONE]` 消息之前会返回一个额外的 chunk。此 chunk 中， usage 字段中输出整个请求的 token 用量，choices 字段为空数组。\n`false`：输出结束前，没有一个 chunk 来返回 token 用量信息。"
+          },
+          "chunk_include_usage": {
+            "type": "boolean",
+            "default": false,
+            "description": "模型流式输出时，输出的每个 chunk 中是否输出本次请求到此 chunk 输出时刻的累计 token 用量信息。\n `true`：在返回的 usage 字段中，输出本次请求到此 chunk 输出时刻的累计 token 用量。\n `false`：不在每个 chunk 都返回 token 用量信息。"
+          }
+        }
+      },
+      "ServiceTier": {
+        "type": "string",
+        "default": "auto",
+        "nullable": true,
+        "description": "指定是否使用[TPM保障包](https://www.volcengine.com/docs/82379/1510762)。生效对象为购买了保障包推理接入点。取值范围\n\n* `auto`：优先使用TPM保障包。如果有TPM保障包额度的推理接入点，本次请求将会使用 TPM 保障包用量，获得更高限流以及响应速度。否则不使用，使用默认的限流和普通的服务响应速度。\n* `default`：本次请求，不使用 TPM 保障包，使用默认的限流和普通的服务响应速度，即使请求的是有TPM保障包额度的推理接入点。"
+      },
+      "ResponseFormat": {
+        "description": "模型输出内容须遵循此处指定的格式。",
+        "default": " {\"type\": \"text\"}",
+        "anyOf": [
+          {
+            "$ref": "#/components/schemas/ResponseFormatText"
+          },
+          {
+            "$ref": "#/components/schemas/ResponseFormatJsonSchema"
+          },
+          {
+            "$ref": "#/components/schemas/ResponseFormatJsonObject"
+          }
+        ]
+      },
+      "ResponseFormatText": {
+        "type": "object",
+        "title": "文本格式",
+        "nullable": true,
+        "default": " {\"type\": \"text\"}",
+        "description": "模型回复文本格式内容。",
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "此处应为 `text`。",
+            "enum": ["text"]
+          }
+        },
+        "required": ["type"]
+      },
+      "ResponseFormatJsonSchema": {
+        "type": "object",
+        "title": "JSON schema",
+        "description": "模型回复内容以JSON对象结构来组织，遵循 schema 字段定义的JSON结构。",
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "此处应为 `json_schema`。",
+            "enum": ["json_schema"]
+          },
+          "json_schema": {
+            "type": "object",
+            "title": "JSON schema",
+            "description": "结构化输出的配置, 包含一个 JSON Schema.\n",
+            "properties": {
+              "description": {
+                "type": "string",
+                "description": "回复用途描述，模型将根据此描述决定如何以该格式回复。"
+              },
+              "name": {
+                "type": "string",
+                "description": "用户自定义的JSON结构的名称。"
+              },
+              "schema": {
+                "$ref": "#/components/schemas/ResponseFormatJsonSchemaSchema"
+              },
+              "strict": {
+                "type": "boolean",
+                "nullable": true,
+                "default": false,
+                "description": "是否在生成输出时，启用严格遵循模式。\n `true`：模型将始终严格遵循schema字段中定义的格式。\n `false`：模型会尽可能遵循schema字段中定义的结构。"
+              }
+            },
+            "required": ["name"]
+          }
+        },
+        "required": ["type"]
+      },
+      "ResponseFormatJsonObject": {
+        "type": "object",
+        "title": "JSON object",
+        "description": "模型回复内容以JSON对象结构来组织。",
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "此处应为json_object。",
+            "enum": ["json_object"]
+          }
+        },
+        "required": ["type"]
+      },
+      "ResponseFormatJsonSchemaSchema": {
+        "type": "object",
+        "title": "JSON schema",
+        "description": "回复格式的 JSON 格式定义，以 JSON Schema 对象的形式描述。定义 JSON schemas 请参见[文档](https://json-schema.org/).",
+        "additionalProperties": true
+      },
+      "JsonSchema": {
+        "title": "JSON Schema 定义",
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "用户自定义的JSON结构的名称。"
+          },
+          "description": {
+            "type": "string",
+            "description": "回复用途描述，模型将根据此描述决定如何以该格式回复。"
+          },
+          "schema": {
+            "type": "object",
+            "description": "回复格式的 JSON 格式定义，以 JSON Schema 对象的形式描述。"
+          },
+          "strict": {
+            "type": "boolean",
+            "default": false,
+            "description": "是否在生成输出时，启用严格遵循模式。"
+          }
+        },
+        "required": ["name", "schema"]
+      },
+      "Tool": {
+        "title": "工具",
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "const": "function",
+            "description": "工具类型，当前仅支持`function`。",
+            "default": "function",
+            "enum": ["function"]
+          },
+          "function": {
+            "$ref": "#/components/schemas/FunctionDefinition"
+          }
+        },
+        "required": ["type", "function"]
+      },
+      "FunctionDefinition": {
+        "title": "函数定义",
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "函数的名称。"
+          },
+          "description": {
+            "type": "string",
+            "description": "函数的描述，模型将根据此描述决定何时以及如何调用该函数。"
+          },
+          "parameters": {
+            "type": "object",
+            "description": "函数接受的参数，以 JSON Schema 对象的形式描述。"
+          }
+        },
+        "required": ["name", "parameters"]
+      },
+      "FunctionChoice": {
+        "title": "FunctionChoice",
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "要调用的函数的名称。"
+          }
+        },
+        "required": ["name"]
+      },
+      "ChatCompletionToolChoiceOption": {
+        "description": "本次请求，模型返回信息中是否有待调用的工具。当没有指定工具时，none 是默认值。如果存在工具，则 `auto` 是默认值。",
+        "anyOf": [
+          {
+            "type": "string",
+            "title": "工具选择模式",
+            "description": "- `none` ：模型返回信息中不可含有待调用的工具。\n - `required` ：模型返回信息中必须含待调用的工具。选择此项时请确认存在适合的工具，以减少模型产生幻觉的情况。\n - `auto` ：模型自行判断返回信息是否有待调用的工具。",
+            "enum": ["none", "auto", "required"]
+          },
+          {
+            "$ref": "#/components/schemas/ChatCompletionNamedToolChoice"
+          }
+        ]
+      },
+      "ParallelToolCalls": {
+        "description": "本次请求，模型返回是否允许包含多个待调用的工具。\n - `true`：允许返回多个待调用的工具。\n - `false`：允许返回的待调用的工具小于等于1，本取值当前仅 doubao-seed-1-6-*** 模型生效。",
+        "type": "boolean",
+        "default": true
+      },
+      "ChatCompletionNamedToolChoice": {
+        "type": "object",
+        "title": "工具调用",
+        "description": "指定待调用工具的范围。模型返回信息中，只允许包含以下模型信息。选择此项时请确认该工具适合用户需求，以减少模型产生幻觉的情况。",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["function"],
+            "description": "调用的类型，此处应为 `function`。 "
+          },
+          "name": {
+            "type": "string",
+            "description": "待调用工具的名称。"
+          }
+        },
+        "required": ["type", "name"]
+      },
+      "ChatCompletionsResponse": {
+        "title": "ChatCompletionsResponse",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "请求的唯一标识符。"
+          },
+          "model": {
+            "type": "string",
+            "description": "用于完成的模型的 ID。"
+          },
+          "service_tier": {
+            "$ref": "#/components/schemas/ServiceTier"
+          },
+          "created": {
+            "type": "integer",
+            "description": "创建完成时的时间戳（Unix 时间）。"
+          },
+          "object": {
+            "type": "string",
+            "const": "chat.completion",
+            "description": "对象类型，始终为 `chat.completion`。",
+            "default": "chat.completion",
+            "enum": ["chat.completion"]
+          },
+          "choices": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ChatChoice"
+            }
+          },
+          "usage": {
+            "$ref": "#/components/schemas/ChatCompletionsUsage"
+          }
+        }
+      },
+      "ChatChoice": {
+        "title": "ChatChoice",
+        "type": "object",
+        "properties": {
+          "index": {
+            "type": "integer",
+            "description": "选择列表中的索引。"
+          },
+
+          "finish_reason": {
+            "type": "string",
+            "enum": ["stop", "length", "tool_calls", "content_filter"],
+            "description": "模型停止生成 token 的原因。取值范围：\n - `stop`：模型输出自然结束，或因命中请求参数 stop 中指定的字段而被截断。\n - `length`：模型输出因达到模型输出限制而被截断，有以下原因：\n   - 触发max_tokens限制（回答内容的长度限制）。\n   - 触发max_completion_tokens限制（思维链内容+回答内容的长度限制）。\n   - 触发context_window限制（输入内容+思维链内容+回答内容的长度限制）。\n - `content_filter`：模型输出被内容审核拦截。\n - `tool_calls`：模型调用了工具。"
+          },
+          "message": {
+            "$ref": "#/components/schemas/ResponseMessage"
+          },
+          "logprobs": {
+            "description": "当前内容的对数概率信息。",
+            "type": "object",
+            "nullable": true,
+            "properties": {
+              "content": {
+                "description": "message列表中每个 content 元素中的 token 对数概率信息。",
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/ChatCompletionTokenLogprob"
+                },
+                "nullable": true
+              }
+            },
+            "required": ["content", "refusal"]
+          },
+          "moderation_hit_type": {
+            "$ref": "#/components/schemas/ModerationHitType"
+          }
+        }
+      },
+      "ResponseMessage": {
+        "title": "ResponseMessage",
+        "type": "object",
+        "properties": {
+          "role": {
+            "type": "string",
+            "const": "assistant",
+            "description": "消息作者的角色。",
+            "default": "assistant",
+            "enum": ["assistant"]
+          },
+          "content": {
+            "type": "string",
+            "nullable": true,
+            "description": "消息的内容。"
+          },
+          "reasoning_content": {
+            "type": "string",
+            "nullable": true,
+            "description": "模型处理问题的思维链内容。仅深度推理模型支持返回此字段。"
+          },
+          "tool_calls": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ToolCall"
+            }
+          }
+        }
+      },
+      "ChatCompletionTokenLogprob": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "description": "当前 token。",
+            "type": "string"
+          },
+          "logprob": {
+            "description": "当前 token 的对数概率。",
+            "type": "number"
+          },
+          "bytes": {
+            "description": "当前 token 的 UTF-8 值，格式为整数列表。当一个字符由多个 token 组成（表情符号或特殊字符等）时可以用于字符的编码和解码。如果 token 没有 UTF-8 值则为空。",
+            "type": "array",
+            "items": {
+              "type": "integer"
+            },
+            "nullable": true
+          },
+          "top_logprobs": {
+            "description": "在当前 token 位置最有可能的标记及其对数概率的列表。在一些情况下，返回的数量可能比请求参数 top_logprobs 指定的数量要少。",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "token": {
+                  "description": "当前 token。",
+                  "type": "string"
+                },
+                "logprob": {
+                  "description": "当前 token 的对数概率。",
+                  "type": "number"
+                },
+                "bytes": {
+                  "description": "当前 token 的 UTF-8 值，格式为整数列表。当一个字符由多个 token 组成（表情符号或特殊字符等）时可以用于字符的编码和解码。如果 token 没有 UTF-8 值则为空。",
+                  "type": "array",
+                  "items": {
+                    "type": "integer"
+                  },
+                  "nullable": true
+                }
+              },
+              "required": ["token", "logprob", "bytes"]
+            }
+          }
+        },
+        "required": ["token", "logprob", "bytes", "top_logprobs"]
+      },
+      "ModerationHitType": {
+        "description": "模型输出文字含有敏感信息时，会返回模型输出文字命中的风险分类标签。\n 返回值及含义：\n - `severe_violation`：模型输出文字涉及严重违规。\n - `violence`：模型输出文字涉及激进行为。\n\n 注意：当前只有视觉理解模型支持返回该字段，且只有在方舟控制台接入点配置页面或者 CreateEndpoint 接口中，将内容护栏方案（ModerationStrategy）设置为基础方案（Basic）时，才会返回风险分类标签。",
+        "type": "string",
+        "nullable": true,
+        "enum": ["severe_violation", "violence"]
+      },
+      "ToolCall": {
+        "title": "ToolCall",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "工具调用的 ID。"
+          },
+          "type": {
+            "type": "string",
+            "const": "function",
+            "description": "工具的类型，当前仅支持 `function`。",
+            "default": "function",
+            "enum": ["function"]
+          },
+          "function": {
+            "$ref": "#/components/schemas/FunctionCall"
+          }
+        },
+        "required": ["id", "type", "function"]
+      },
+      "FunctionCall": {
+        "title": "FunctionCall",
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "要调用的函数的名称。"
+          },
+          "arguments": {
+            "type": "string",
+            "description": "模型生成的、包含要传递给函数的参数的 JSON 对象字符串。"
+          }
+        },
+        "required": ["name", "arguments"]
+      },
+      "ChatCompletionsStreamResponse": {
+        "title": "ChatCompletionsStreamResponse",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "请求的唯一标识符。"
+          },
+          "model": {
+            "type": "string",
+            "description": "用于完成的模型的 ID。"
+          },
+          "service_tier": {
+            "$ref": "#/components/schemas/ServiceTier"
+          },
+          "created": {
+            "type": "integer",
+            "description": "创建完成时的时间戳（Unix 时间）。"
+          },
+          "object": {
+            "type": "string",
+            "const": "chat.completion.chunk",
+            "description": "对象类型，始终为 `chat.completion.chunk`。",
+            "default": "chat.completion.chunk",
+            "enum": ["chat.completion.chunk"]
+          },
+
+          "choices": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/StreamChoice"
+            }
+          },
+          "usage": {
+            "$ref": "#/components/schemas/ChatCompletionsUsage"
+          }
+        }
+      },
+      "StreamChoice": {
+        "title": "StreamChoice",
+        "type": "object",
+        "properties": {
+          "index": {
+            "type": "integer",
+            "description": "选择列表中的索引。"
+          },
+          "finish_reason": {
+            "type": "string",
+            "enum": ["stop", "length", "tool_calls", "content_filter"],
+            "description": "模型停止生成 token 的原因。取值范围：\n - `stop`：模型输出自然结束，或因命中请求参数 stop 中指定的字段而被截断。\n - `length`：模型输出因达到模型输出限制而被截断，有以下原因：\n   - 触发max_tokens限制（回答内容的长度限制）。\n   - 触发max_completion_tokens限制（思维链内容+回答内容的长度限制）。\n   - 触发context_window限制（输入内容+思维链内容+回答内容的长度限制）。\n - `content_filter`：模型输出被内容审核拦截。\n - `tool_calls`：模型调用了工具。"
+          },
+          "delta": {
+            "$ref": "#/components/schemas/ResponseMessage"
+          },
+          "logprobs": {
+            "description": "当前内容的对数概率信息。",
+            "type": "object",
+            "nullable": true,
+            "properties": {
+              "content": {
+                "description": "message列表中每个 content 元素中的 token 对数概率信息。",
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/ChatCompletionTokenLogprob"
+                },
+                "nullable": true
+              }
+            },
+            "required": ["content", "refusal"]
+          },
+          "moderation_hit_type": {
+            "$ref": "#/components/schemas/ModerationHitType"
+          }
+        }
+      },
+      "ImageGenerationsRequest": {
+        "title": "创建图片生成请求",
+        "type": "object",
+        "properties": {
+          "model": {
+            "type": "string",
+            "description": "用于图片生成的模型 ID。请参考[模型列表](https://www.volcengine.com/docs/82379/1330310)获取支持的模型。"
+          },
+          "n": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 4,
+            "default": 1,
+            "description": "生成图片的数量，最多4张。"
+          },
+          "prompt": {
+            "type": "string",
+            "description": "所需图片的文本描述，最多 1000 个字符。"
+          },
+          "response_format": {
+            "type": "string",
+            "enum": ["url", "b64_json"],
+            "default": "url",
+            "description": "返回生成图片的格式。`url` 或 `b64_json`。"
+          },
+          "size": {
+            "type": "string",
+            "enum": [
+              "1024x1024",
+              "864x1152",
+              "1152x864",
+              "1280x720",
+              "720x1280",
+              "832x1248",
+              "1248x832",
+              "1512x648"
+            ],
+            "default": "1024x1024",
+            "description": "生成图片的尺寸。"
+          },
+          "seed": {
+            "type": "integer",
+            "default": -1,
+            "minimum": -1,
+            "maximum": 2147483647,
+            "description": "随机数种子，用于控制模型生成内容的随机性。如果不提供，则算法自动生成一个随机数作为种子。如果希望生成内容保持一致，可以使用相同的 seed 参数值。"
+          },
+          "guidance_scale": {
+            "type": "number",
+            "format": "float",
+            "default": 2.5,
+            "minimum": 1,
+            "maximum": 10,
+            "description": "模型输出结果与prompt的一致程度，即生成图像的自由度；值越大，模型自由度越小，与用户输入的提示词相关性越强。"
+          },
+          "watermark": {
+            "type": "boolean",
+            "default": true,
+            "description": "是否在生成的图片中添加水印。false：不添加水印。true：在图片右下角添加\"AI生成\"字样的水印标识。"
+          }
+        },
+        "required": ["model", "prompt"]
+      },
+      "CreateVideoGenerationTaskRequest": {
+        "title": "创建视频生成任务请求",
+        "type": "object",
+        "properties": {
+          "model": {
+            "type": "string",
+            "description": "用于视频生成的模型 ID。请参考[模型列表](https://www.volcengine.com/docs/82379/1330310)获取支持的模型。"
+          },
+          "content": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/VideoContent"
+            },
+            "description": "输入给模型，生成视频的信息，支持文本信息和图片信息。"
+          },
+          "callback_url": {
+            "type": "string",
+            "description": "填写本次生成任务结果的回调通知地址。当视频生成任务有状态变化时，方舟将向此地址推送 POST 请求。回调请求内容结构与查询任务API的返回体一致。回调返回的 status 包括以下状态：queued：排队中；running：任务运行中；succeeded：任务成功（如发送失败，即5秒内没有接收到成功发送的信息，回调三次）；failed：任务失败（如发送失败，即5秒内没有接收到成功发送的信息，回调三次）"
+          },
+          "return_last_frame": {
+            "type": "boolean",
+            "default": false,
+            "description": "仅doubao-seedance-1-0-lite-i2v支持该参数。true：返回生成视频的尾帧图像。尾帧图像的格式为 png，宽高像素值与生成的视频一致，无水印。您可通过查询视频生成任务接口获取视频的尾帧图像。false：不返回生成视频的尾帧图像。"
+          }
+        },
+        "required": ["model", "content"]
+      },
+      "CreateVideoGenerationTaskResponse": {
+        "title": "创建视频生成任务响应",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "视频生成任务 ID 。创建视频生成任务为异步接口，获取 ID 后，需要通过 查询视频生成任务 API 来查询视频生成任务的状态。任务成功后，会输出生成视频的video_url。"
+          }
+        }
+      },
+      "VideoContent": {
+        "type": "object",
+        "oneOf": [
+          {
+            "type": "object",
+            "title": "文本信息",
+
+            "properties": {
+              "type": { "const": "text", "default": "text", "enum": ["text"] },
+              "text": {
+                "type": "string",
+                "description": "文本提示词（500字以内）及参数命令"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "title": "图片信息",
+            "required": ["type", "image_url"],
+            "properties": {
+              "type": {
+                "const": "image_url",
+                "default": "image_url",
+                "enum": ["image_url"]
+              },
+              "image_url": {
+                "$ref": "#/components/schemas/ImageUrl"
+              },
+              "role": {
+                "type": "string",
+                "enum": ["first_frame", "last_frame", "reference_image"],
+                "description": "图片用途（首帧/尾帧/参考图）"
+              }
+            }
+          }
+        ]
+      },
+      "ErrorResponse": {
+        "title": "错误信息",
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "错误码。"
+          },
+          "message": {
+            "type": "string",
+            "description": "错误描述信息。"
+          }
+        },
+        "required": ["code", "message"]
+      },
+      "Error": {
+        "title": "Error",
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "错误的类型。"
+          },
+          "message": {
+            "type": "string",
+            "description": "对错误的描述。"
+          },
+          "param": {
+            "type": "string",
+            "description": "导致错误的参数。"
+          },
+          "type": {
+            "type": "string",
+            "description": "错误的类型。"
+          }
+        }
+      },
+      "Function": {
+        "title": "Function",
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "要调用的函数的名称。必须是 a-z, A-Z, 0-9, 或包含下划线和短横线，最大长度为 64。"
+          },
+          "description": {
+            "type": "string",
+            "description": "关于函数作用的描述，模型使用它来决定何时以及如何调用函数。"
+          },
+          "parameters": {
+            "type": "object",
+            "description": "函数接受的参数，以 JSON Schema 对象格式描述。"
+          }
+        },
+        "required": ["name", "parameters"]
+      },
+      "ImageGenerationsResponse": {
+        "title": "图片生成响应",
+        "type": "object",
+        "properties": {
+          "model": {
+            "type": "string",
+            "description": "本次请求使用的模型 ID （模型名称-版本）。"
+          },
+          "created": {
+            "type": "integer",
+            "format": "int64",
+            "description": "本次请求创建时间的 Unix 时间戳（秒）。"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ImageObject"
+            },
+            "description": "输出图像的信息，包括图像下载的 URL 或 Base64。当指定返回生成图像的格式为url时，则相应参数的子字段为url。为确保信息安全，该链接将在生成后 24 小时内失效，请务必及时保存图像。当指定返回生成图像的格式为b64_json时，则相应参数的子字段为b64_json。"
+          },
+          "usage": {
+            "$ref": "#/components/schemas/ImageGenerationUsage",
+            "description": "本次请求的用量信息。"
+          }
+        }
+      },
+      "ImageGenerationUsage": {
+        "title": "图片生成用量信息",
+        "type": "object",
+        "properties": {
+          "generated_images": {
+            "type": "integer",
+            "description": "模型生成的图片张数。注意：图片生成模型按照生成的图片张数进行计费。"
+          },
+          "output_tokens": {
+            "type": "integer",
+            "description": "模型生成的图片所用的token数量。计算公式为：长*宽/256，四舍五入取整。"
+          },
+          "total_tokens": {
+            "type": "integer",
+            "description": "本次请求消耗的总token数量。说明：由于输入不进行token计算，故total_tokens和output_tokens一致。"
+          }
+        }
+      },
+      "ImageObject": {
+        "title": "图片对象",
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "图片的 URL。当请求中指定response_format为\"url\"时返回，该链接将在生成后 24 小时内失效。"
+          },
+          "b64_json": {
+            "type": "string",
+            "description": "Base64 编码的图片数据。当请求中指定response_format为\"b64_json\"时返回。"
+          },
+          "revised_prompt": {
+            "type": "string",
+            "description": "为图片生成的修订版提示词。"
+          }
+        }
+      },
+      "InputContentPart": {
+        "title": "输入内容部分",
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/InputTextPart"
+          },
+          {
+            "$ref": "#/components/schemas/InputImagePart"
+          },
+          {
+            "$ref": "#/components/schemas/InputVideoPart"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "type"
+        }
+      },
+      "InputImagePart": {
+        "title": "输入图片部分",
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "const": "input_image",
+            "description": "内容类型，此处为 `input_image`。",
+            "default": "input_image",
+            "enum": ["input_image"]
+          },
+          "image_url": {
+            "type": "string",
+            "description": "要发送给模型的图片 URL。可以是完整的 URL，或以 data URL 形式编码的 base64 图片。"
+          },
+          "detail": {
+            "type": "string",
+            "enum": ["high", "low", "auto"],
+            "default": "auto",
+            "description": "发送给模型的图片细节级别。"
+          }
+        },
+        "required": ["type", "image_url"]
+      },
+      "InputTextPart": {
+        "title": "输入文本部分",
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "const": "input_text",
+            "description": "内容类型，此处为 `input_text`。",
+            "default": "input_text",
+            "enum": ["input_text"]
+          },
+          "text": {
+            "type": "string",
+            "description": "输入模型的文本。"
+          }
+        },
+        "required": ["type", "text"]
+      },
+      "InputVideoPart": {
+        "title": "输入视频部分",
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "const": "input_video",
+            "description": "内容类型，此处为 `input_video`。",
+            "default": "input_video",
+            "enum": ["input_video"]
+          },
+          "video_url": {
+            "type": "string",
+            "description": "要发送给模型的视频 URL。可以是完整的 URL，或以 data URL 形式编码的 base64 视频。"
+          },
+          "fps": {
+            "type": "number",
+            "format": "float",
+            "minimum": 0.2,
+            "maximum": 5,
+            "description": "每秒钟从视频中抽取指定数量的图像，取值范围：`[0.2, 5]`。"
+          }
+        },
+        "required": ["type", "video_url"]
+      },
+      "JsonObjectFormat": {
+        "title": "JSON 对象格式",
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "const": "json_object",
+            "description": "响应格式的类型，此处应为 `json_object`。",
+            "default": "json_object",
+            "enum": ["json_object"]
+          }
+        },
+        "required": ["type"]
+      },
+      "ListVideoGenerationTasksResponse": {
+        "title": "查询视频生成任务列表响应",
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "description": "查询到的视频生成任务列表。",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "视频生成任务 ID 。"
+                },
+                "model": {
+                  "type": "string",
+                  "description": "任务使用的模型名称和版本，`模型名称-版本`。"
+                },
+                "status": {
+                  "type": "string",
+                  "enum": [
+                    "queued",
+                    "running",
+                    "cancelled",
+                    "succeeded",
+                    "failed"
+                  ],
+                  "description": "任务状态，以及相关的信息：\n\n* `queued`：排队中。\n* `running`：任务运行中。\n* `cancelled`：取消任务，取消状态24h自动删除（只支持排队中状态的任务被取消）。\n* `succeeded`： 任务成功。\n* `failed`：任务失败。"
+                },
+                "error": {
+                  "type": "object",
+                  "nullable": true,
+                  "description": "错误提示信息，任务成功返回`null`，任务失败时返回错误数据，错误信息具体参见 [错误处理](https://www.volcengine.com/docs/82379/1393047#653d2c40)。",
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "description": "错误码。"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "错误提示信息。"
+                    }
+                  }
+                },
+                "created_at": {
+                  "type": "integer",
+                  "description": "任务创建时间的 Unix 时间戳（秒）。"
+                },
+                "updated_at": {
+                  "type": "integer",
+                  "description": "任务当前状态更新时间的 Unix 时间戳（秒）。"
+                },
+                "content": {
+                  "type": "object",
+                  "description": "当视频生成任务完成，会输出该字段，包含生成视频下载的 URL。",
+                  "properties": {
+                    "video_url": {
+                      "type": "string",
+                      "description": "生成视频的URL。为保障信息安全，生成的视频会在24小时后被清理，请及时转存。"
+                    },
+                    "last_frame_url": {
+                      "type": "string",
+                      "description": "视频的尾帧图像 URL。有效期为 24小时，请及时转存。\n说明：创建视频生成任务时设置 **return_last_frame**: `true` 时，会返回参数。"
+                    }
+                  }
+                },
+                "seed": {
+                  "type": "integer",
+                  "description": "本次请求使用的种子整数值。"
+                },
+                "resolution": {
+                  "type": "string",
+                  "description": "生成视频的分辨率。"
+                },
+                "ratio": {
+                  "type": "string",
+                  "description": "生成视频的宽高比。"
+                },
+                "duration": {
+                  "type": "integer",
+                  "description": "生成视频的时长，单位：秒。"
+                },
+                "framepersecond": {
+                  "type": "integer",
+                  "description": "生成视频的帧率。"
+                },
+                "usage": {
+                  "type": "object",
+                  "description": "本次请求的 token 用量。",
+                  "properties": {
+                    "completion_tokens": {
+                      "type": "integer",
+                      "description": "模型生成的 token 数量。"
+                    },
+                    "total_tokens": {
+                      "type": "integer",
+                      "description": "视频生成模型不统计输入 token，输入 token 为 0，故 **total_tokens**=**completion_tokens**。"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "total": {
+            "type": "integer",
+            "description": "符合筛选条件的任务数量。"
+          }
+        }
+      },
+
+      "MessageContentPart": {
+        "title": "消息内容部分",
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["text", "image_url", "video_url"],
+            "description": "内容部分的类型。"
+          },
+          "text": {
+            "type": "string",
+            "description": "文本内容。"
+          },
+          "image_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "图片的 URL。"
+          },
+          "video_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "视频的 URL。"
+          }
+        }
+      },
+      "MultimodalEmbeddingsRequest": {
+        "title": "多模态向量化请求",
+        "type": "object",
+        "properties": {
+          "model": {
+            "type": "string",
+            "description": "用于向量化的模型 ID。请参考[模型列表](https://www.volcengine.com/docs/82379/1330310)获取支持的模型。"
+          },
+          "input": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MessageContent"
+            },
+            "description": "输入内容，可以是文本、图片或视频。"
+          },
+          "encoding_format": {
+            "type": "string",
+            "enum": ["float", "base64"],
+            "default": "float",
+            "description": "返回向量的格式。"
+          }
+        },
+        "required": ["model", "input"]
+      },
+      "MultimodalEmbeddingsResponse": {
+        "title": "多模态向量化响应",
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Embedding"
+            },
+            "description": "向量化结果列表。"
+          },
+          "model": {
+            "type": "string",
+            "description": "使用的模型 ID。"
+          },
+          "object": {
+            "type": "string",
+            "default": "list",
+            "description": "对象类型，始终为 `list`。"
+          },
+          "usage": {
+            "$ref": "#/components/schemas/MultimodalEmbeddingsUsage"
+          }
+        }
+      },
+      "MultimodalEmbeddingsUsage": {
+        "title": "图像向量化用量",
+        "type": "object",
+        "description": "本次请求的 token 用量。",
+        "properties": {
+          "prompt_tokens": {
+            "type": "integer",
+            "description": "输入内容 token 数量。"
+          },
+          "total_tokens": {
+            "type": "integer",
+            "description": "本次请求消耗的总 token 数量（输入 + 输出）。"
+          },
+          "prompt_tokens_details": {
+            "type": "object",
+            "description": "输入的内容使用 token 量的细节信息。",
+            "properties": {
+              "text_tokens": {
+                "type": "integer",
+                "description": "输入内容中，文本内容对应的 token 量，以及视频内容时间轴产生的 token 量。为保证模型效果，当图片或视频传入时，会生成少量的预设文本 token，产生额外的 text_tokens。"
+              },
+              "image_tokens": {
+                "type": "integer",
+                "description": "输入内容中，图片内容以及视频内容抽帧图片对应的 token 量。"
+              }
+            }
+          }
+        }
+      },
+
+      "Pagination": {
+        "title": "分页信息",
+        "type": "object",
+        "properties": {
+          "page_num": {
+            "type": "integer",
+            "description": "当前页码。"
+          },
+          "page_size": {
+            "type": "integer",
+            "description": "每页结果数量。"
+          },
+          "total": {
+            "type": "integer",
+            "description": "结果总数。"
+          }
+        }
+      },
+      "ResponseInputMessage": {
+        "title": "输入消息",
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "消息输入的类型，此处应为`message`。",
+            "default": "message",
+            "enum": ["message"]
+          },
+          "role": {
+            "type": "string",
+            "enum": ["user", "assistant", "system", "developer"],
+            "description": "输入消息的角色。"
+          },
+          "content": {
+            "description": "用于生成回复的文本、图片或视频输入，也可以包含先前助手的回复内容。",
+            "items": {
+              "oneOf": [
+                {
+                  "title": "文本输入",
+                  "type": "string",
+                  "description": "输入给模型的文本。"
+                },
+                {
+                  "type": "array",
+                  "title": "输入的内容列表",
+                  "items": {
+                    "$ref": "#/components/schemas/ChatMessageContentPart"
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "required": ["role", "content"]
+      },
+      "ResponseToolCall": {
+        "title": "工具调用信息",
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "工具调用的类型，始终为 `function_call`。",
+            "const": "function_call",
+            "default": "function_call",
+            "enum": ["function_call"]
+          },
+          "call_id": {
+            "type": "string",
+            "description": "模型生成的函数工具调用的唯一ID。"
+          },
+          "name": {
+            "type": "string",
+            "description": "要运行的函数的名称。"
+          },
+          "arguments": {
+            "type": "string",
+            "description": "要传递给函数的参数的 JSON 字符串。"
+          },
+          "status": {
+            "type": "string",
+            "description": "该项的状态。"
+          }
+        },
+        "required": ["type", "call_id", "name", "arguments"]
+      },
+      "ResponseToolCallOutput": {
+        "title": "工具返回信息",
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "工具调用的类型，始终为 `function_call_output`。",
+            "const": "function_call_output",
+            "default": "function_call_output",
+            "enum": ["function_call_output"]
+          },
+          "call_id": {
+            "type": "string",
+            "description": "模型生成的函数工具调用的唯一 ID。"
+          },
+          "output": {
+            "type": "string",
+            "description": "调用工具后，工具输出的结果。"
+          },
+          "status": {
+            "type": "string",
+            "description": "该项的状态。"
+          }
+        },
+        "required": ["type", "call_id", "output"]
+      },
+      "ResponsesResponse": {
+        "title": "ResponsesResponse",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "本次请求的唯一标识。"
+          },
+          "model": {
+            "type": "string",
+            "description": "本次请求实际使用的模型名称和版本。"
+          },
+          "object": {
+            "type": "string",
+            "const": "response",
+            "description": "固定为`response`。",
+            "default": "response",
+            "enum": ["response"]
+          },
+          "created_at": {
+            "type": "integer",
+            "description": "本次请求创建时间的 Unix 时间戳（秒）。"
+          },
+          "output": {
+            "type": "array",
+            "description": "模型的输出消息列表，包含模型响应本次请求生成的回答、思维链、工具调用。",
+            "items": {
+              "$ref": "#/components/schemas/ResponseOutput"
+            }
+          },
+          "usage": {
+            "$ref": "#/components/schemas/ResponsesUsage"
+          }
+        }
+      },
+      "ResponseOutput": {
+        "title": "ResponseOutput",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "此回答的唯一标识。"
+          },
+          "type": {
+            "type": "string",
+            "description": "输出消息的类型，此处应为`message`。",
+            "default": "message",
+            "enum": ["message"]
+          },
+          "role": {
+            "type": "string",
+            "enum": ["assistant"],
+            "description": "输出信息的角色，固定为`assistant`。"
+          },
+          "status": {
+            "type": "string",
+            "description": "输出消息的状态。",
+            "enum": ["completed", "failed", "in_progress", "incomplete"]
+          },
+          "content": {
+            "type": "array",
+            "description": "输出消息的内容。",
+            "items": {
+              "$ref": "#/components/schemas/OutputContentPart"
+            }
+          }
+        },
+        "required": ["id", "type", "role", "status", "content"]
+      },
+      "OutputContentPart": {
+        "title": "OutputContentPart",
+        "type": "object",
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/OutputText"
+          },
+          {
+            "$ref": "#/components/schemas/OutputReasoning"
+          },
+          {
+            "$ref": "#/components/schemas/OutputFunctionCall"
+          }
+        ]
+      },
+      "OutputText": {
+        "title": "文本输出",
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "const": "output_text",
+            "description": "内容类型为模型输出的文本。",
+            "default": "output_text",
+            "enum": ["output_text"]
+          },
+          "text": {
+            "type": "string",
+            "description": "模型的文本输出。"
+          }
+        },
+        "required": ["type", "text"]
+      },
+      "OutputReasoning": {
+        "title": "思维链输出",
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "const": "reasoning",
+            "description": "内容类型为思维链。",
+            "default": "reasoning",
+            "enum": ["reasoning"]
+          },
+          "summary": {
+            "type": "array",
+            "description": "思维链内容。",
+            "items": {
+              "$ref": "#/components/schemas/ReasoningContent"
+            }
+          }
+        },
+        "required": ["type", "summary"]
+      },
+      "OutputFunctionCall": {
+        "title": "函数调用输出",
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "const": "function_call",
+            "description": "内容类型为函数调用。",
+            "default": "function_call",
+            "enum": ["function_call"]
+          },
+          "call_id": {
+            "type": "string",
+            "description": "本次工具调用信息的唯一 ID。"
+          },
+          "name": {
+            "type": "string",
+            "description": "要运行的函数的名称。"
+          },
+          "arguments": {
+            "type": "string",
+            "description": "要传递给函数的参数的 JSON 字符串。"
+          }
+        },
+        "required": ["type", "call_id", "name", "arguments"]
+      },
+      "ReasoningContent": {
+        "title": "思维链内容",
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "const": "summary_text",
+            "description": "对象的类型，此处应为 `summary_text`。",
+            "default": "summary_text",
+            "enum": ["summary_text"]
+          },
+          "text": {
+            "type": "string",
+            "description": "思维链内容的文本部分。"
+          }
+        },
+        "required": ["type", "text"]
+      },
+      "ResponsesRequest": {
+        "title": "ResponsesRequest",
+        "type": "object",
+        "properties": {
+          "model": {
+            "type": "string",
+            "description": "您需要调用的模型的 ID。支持的模型请参见 [Responses API 教程](https://www.volcengine.com/docs/82379/1585128#%E6%94%AF%E6%8C%81%E6%A8%A1%E5%9E%8B)。"
+          },
+          "input": {
+            "items": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "title": "文本输入",
+                  "description": "输入给模型的文本类型信息，等同于使用 user 角色输入的文本信息。"
+                },
+                {
+                  "type": "array",
+                  "title": "输入元素列表",
+                  "items": {
+                    "oneOf": [
+                      {
+                        "$ref": "#/components/schemas/ResponseInputMessage"
+                      },
+                      {
+                        "$ref": "#/components/schemas/ResponseToolCall"
+                      },
+                      {
+                        "$ref": "#/components/schemas/ResponseToolCallOutput"
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            "description": "输入的内容，模型需要处理的输入信息。可以是简单的文本，也可以是包含消息、工具调用等元素的数组。"
+          },
+          "instructions": {
+            "type": "string",
+            "nullable": true,
+            "description": "在模型上下文中插入系统消息或者开发者作为第一条指令。"
+          },
+          "previous_response_id": {
+            "type": "string",
+            "nullable": true,
+            "description": "上一个模型回复的唯一标识符，用于实现多轮对话。"
+          },
+          "expire_at": {
+            "type": "integer",
+            "format": "int64",
+            "description": "设置存储的有效期，对 store 和 caching 都生效。需传入 UTC Unix 时间戳（单位：秒）。"
+          },
+          "max_output_tokens": {
+            "type": "integer",
+            "nullable": true,
+            "description": "模型输出最大 token 数，包含模型回答和思维链内容。"
+          },
+          "thinking": {
+            "$ref": "#/components/schemas/Thinking"
+          },
+          "caching": {
+            "$ref": "#/components/schemas/Caching"
+          },
+          "store": {
+            "type": "boolean",
+            "nullable": true,
+            "default": true,
+            "description": "是否储存生成的模型响应，以便后续通过 API 检索。"
+          },
+          "stream": {
+            "type": "boolean",
+            "nullable": true,
+            "default": false,
+            "description": "响应内容是否流式返回。"
+          },
+          "temperature": {
+            "type": "number",
+            "format": "float",
+            "minimum": 0,
+            "maximum": 2,
+            "default": 1,
+            "description": "采样温度。较高的值会使输出更加随机，而较低的值会使输出更加集中确定。"
+          },
+          "top_p": {
+            "type": "number",
+            "format": "float",
+            "minimum": 0,
+            "maximum": 1,
+            "default": 0.7,
+            "description": "核采样概率阈值。模型会考虑概率质量在 top_p 内的 token 结果。"
+          },
+          "text": {
+            "$ref": "#/components/schemas/TextFormatContainer"
+          }
+        },
+        "required": ["model", "input"]
+      },
+
+      "ResponseChoice": {
+        "title": "ResponseChoice",
+        "type": "object",
+        "properties": {
+          "index": {
+            "type": "integer",
+            "description": "选择列表中的索引。"
+          },
+          "message": {
+            "$ref": "#/components/schemas/ResponseOutputMessage"
+          },
+          "finish_reason": {
+            "type": "string",
+            "description": "模型停止生成 token 的原因。"
+          }
+        }
+      },
+      "ResponseOutputMessage": {
+        "title": "ResponseOutputMessage",
+        "type": "object",
+        "properties": {
+          "role": {
+            "type": "string",
+            "enum": ["assistant"],
+            "description": "消息作者的角色。"
+          },
+          "content": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OutputContentPart"
+            },
+            "description": "模型回复的内容。"
+          },
+          "tool_calls": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ResponseFunctionCall"
+            },
+            "description": "模型决定调用的工具。"
+          }
+        }
+      },
+      "ResponseFunctionCall": {
+        "title": "模型调用的函数",
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "const": "function_call",
+            "description": "类型为函数调用。",
+            "default": "function_call",
+            "enum": ["function_call"]
+          },
+          "call_id": {
+            "type": "string",
+            "description": "模型生成的函数工具调用的唯一ID。"
+          },
+          "name": {
+            "type": "string",
+            "description": "要运行的函数的名称。"
+          },
+          "arguments": {
+            "type": "string",
+            "description": "要传递给函数的参数的 JSON 字符串。"
+          }
+        }
+      },
+      "ResponsesStreamResponse": {
+        "title": "ResponsesStreamResponse",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "请求的唯一标识符。"
+          },
+          "model": {
+            "type": "string",
+            "description": "用于完成的模型的 ID。"
+          },
+          "choices": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ResponseStreamChoice"
+            }
+          },
+          "usage": {
+            "$ref": "#/components/schemas/ResponsesUsage"
+          }
+        }
+      },
+      "ResponseStreamChoice": {
+        "title": "ResponseStreamChoice",
+        "type": "object",
+        "properties": {
+          "index": {
+            "type": "integer",
+            "description": "选择列表中的索引。"
+          },
+          "delta": {
+            "$ref": "#/components/schemas/ResponseOutputMessage"
+          },
+          "finish_reason": {
+            "type": "string",
+            "nullable": true,
+            "description": "模型停止生成 token 的原因。"
+          }
+        }
+      },
+      "TextEmbeddingsRequest": {
+        "title": "文本向量化请求",
+        "type": "object",
+        "properties": {
+          "model": {
+            "type": "string",
+            "description": "您需要调用的模型的 ID （Model ID），[开通模型服务](https://console.volcengine.com/ark/region:ark+cn-beijing/openManagement?LLM=%7B%7D&OpenTokenDrawer=false)，并[查询 Model ID](https://www.volcengine.com/docs/82379/1330310) 。\n您也可通过 Endpoint ID 来调用模型，获得限流、计费类型（前付费/后付费）、运行状态查询、监控、安全等高级能力，可参考[获取 Endpoint ID](https://www.volcengine.com/docs/82379/1099522#%E8%8E%B7%E5%8F%96-endpoint-id)。"
+          },
+          "input": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            ],
+            "description": "需要向量化的内容列表，支持中文、英文。输入内容需满足下面条件：\n\n* 不得超过模型的最大输入 token 数。doubao-embdding 模型，每个列表元素（并非单次请求总数）最大输入token 数为 4096。\n* 不能为空列表，列表的每个成员不能为空字符串。\n* 单条文本以 utf-8 编码，长度不超过 100,000 字节。\n\n为获得更好性能，建议文本数量总token不超过4096，或者文本条数不超过4。"
+          },
+          "encoding_format": {
+            "type": "string",
+            "enum": ["float", "base64"],
+            "default": "float",
+            "description": "取值范围： `float`、`base64`、`null`。embedding 返回的格式。"
+          }
+        },
+        "required": ["model", "input"]
+      },
+      "TextEmbeddingsResponse": {
+        "title": "文本向量化响应",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "本次请求的唯一标识 。"
+          },
+          "model": {
+            "type": "string",
+            "description": "本次请求实际使用的模型名称和版本。"
+          },
+          "created": {
+            "type": "integer",
+            "description": "本次请求创建时间的 Unix 时间戳（秒）。"
+          },
+          "object": {
+            "type": "string",
+            "default": "list",
+            "description": "固定为 `list`。"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Embedding"
+            },
+            "description": "本次请求的算法输出内容。"
+          },
+          "usage": {
+            "$ref": "#/components/schemas/TextEmbeddingsUsage"
+          }
+        }
+      },
+      "TextFormat": {
+        "title": "文本格式",
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "const": "text",
+            "description": "响应格式的类型，此处应为 `text`。",
+            "default": "text",
+            "enum": ["text"]
+          }
+        },
+        "required": ["type"]
+      },
+      "TextFormatContainer": {
+        "title": "文本输出格式",
+        "type": "object",
+        "properties": {
+          "format": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/TextFormat"
+              },
+              {
+                "$ref": "#/components/schemas/JsonObjectFormat"
+              }
+            ],
+            "discriminator": {
+              "propertyName": "type"
+            },
+            "description": "指定模型文本输出的格式。"
+          }
+        }
+      },
+      "ToolChoice": {
+        "title": "ToolChoice",
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["function"]
+          },
+          "function": {
+            "$ref": "#/components/schemas/FunctionChoice"
+          }
+        },
+        "required": ["type", "function"]
+      },
+      "TextEmbeddingsUsage": {
+        "title": "文本向量化用量",
+        "type": "object",
+        "properties": {
+          "prompt_tokens": {
+            "type": "integer",
+            "description": "输入内容 token 数量。"
+          },
+          "total_tokens": {
+            "type": "integer",
+            "description": "本次请求消耗的总 token 数量（输入 + 输出）。"
+          }
+        }
+      },
+      "ResponsesUsage": {
+        "title": "Responses用量",
+        "type": "object",
+        "description": "本次请求的 token 用量，包括输入 token 数量、输入 token 的详细分解、输出 token 数量、输出 token 的详细分解，以及总共使用的 token 数。",
+        "properties": {
+          "input_tokens": {
+            "type": "integer",
+            "description": "输入的 token 量。"
+          },
+          "input_tokens_details": {
+            "type": "object",
+            "description": "输入 token 的详细信息。",
+            "properties": {
+              "cached_tokens": {
+                "type": "integer",
+                "description": "缓存 token 的数量。"
+              }
+            }
+          },
+          "output_tokens": {
+            "type": "integer",
+            "description": "输出的 token 量。"
+          },
+          "output_tokens_details": {
+            "type": "object",
+            "description": "输出 token 的详细信息。",
+            "properties": {
+              "reasoning_tokens": {
+                "type": "integer",
+                "description": "思考用 token 的数量。"
+              }
+            }
+          },
+          "total_tokens": {
+            "type": "integer",
+            "description": "消耗 token 的总量。"
+          }
+        }
+      },
+      "ChatCompletionsUsage": {
+        "title": "对话用量",
+        "type": "object",
+        "description": "本次请求的 token 用量。",
+        "properties": {
+          "total_tokens": {
+            "type": "integer",
+            "description": "本次请求消耗的总 token 数量（输入 + 输出）。"
+          },
+          "prompt_tokens": {
+            "type": "integer",
+            "description": "输入给模型处理的内容 token 数量。"
+          },
+          "prompt_tokens_details": {
+            "type": "object",
+            "description": "输入给模型处理的内容 token 数量的细节。",
+            "properties": {
+              "cached_tokens": {
+                "type": "integer",
+                "description": "缓存输入内容的 token 用量。"
+              }
+            }
+          },
+          "completion_tokens": {
+            "type": "integer",
+            "description": "模型输出内容花费的 token。"
+          },
+          "completion_tokens_details": {
+            "type": "object",
+            "description": "模型输出内容花费的 token 的细节。",
+            "properties": {
+              "reasoning_tokens": {
+                "type": "integer",
+                "description": "输出思维链内容花费的 token 数。"
+              }
+            }
+          }
+        }
+      },
+      "Usage": {
+        "title": "Usage",
+        "type": "object",
+        "properties": {
+          "prompt_tokens": {
+            "type": "integer",
+            "description": "提示中的 token 数量。"
+          },
+          "completion_tokens": {
+            "type": "integer",
+            "description": "生成文本中的 token 数量。"
+          },
+          "total_tokens": {
+            "type": "integer",
+            "description": "请求中的 token 总数。"
+          }
+        }
+      },
+      "VideoGenerationTaskResponse": {
+        "title": "查询视频生成任务响应",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "视频生成任务 ID 。"
+          },
+          "model": {
+            "type": "string",
+            "description": "任务使用的模型名称和版本，`模型名称-版本`。"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["queued", "running", "cancelled", "succeeded", "failed"],
+            "description": "任务状态，以及相关的信息：\n\n* `queued`：排队中。\n* `running`：任务运行中。\n* `cancelled`：取消任务，取消状态24h自动删除（只支持排队中状态的任务被取消）。\n* `succeeded`： 任务成功。\n* `failed`：任务失败。"
+          },
+          "created_at": {
+            "type": "integer",
+            "description": "任务创建时间的 Unix 时间戳（秒）。"
+          },
+          "updated_at": {
+            "type": "integer",
+            "description": "任务当前状态更新时间的 Unix 时间戳（秒）。"
+          },
+          "content": {
+            "type": "object",
+            "description": "当视频生成任务完成，会输出该字段，包含生成视频下载的 URL。",
+            "properties": {
+              "video_url": {
+                "type": "string",
+                "description": "生成视频的 URL，格式为mp4。为保障信息安全，生成的视频会在24小时后被清理，请及时转存。"
+              },
+              "last_frame_url": {
+                "type": "string",
+                "description": "视频的尾帧图像 URL。有效期为 24小时，请及时转存。\n创建视频生成任务时，设置 **return_last_frame** 值为 `true` 时，返回该字段。"
+              }
+            }
+          },
+          "seed": {
+            "type": "integer",
+            "description": "本次请求使用的种子整数值。"
+          },
+          "resolution": {
+            "type": "string",
+            "description": "生成视频的分辨率。"
+          },
+          "ratio": {
+            "type": "string",
+            "description": "生成视频的宽高比。"
+          },
+          "duration": {
+            "type": "integer",
+            "description": "生成视频的时长，单位：秒。"
+          },
+          "framespersecond": {
+            "type": "integer",
+            "description": "生成视频的帧率。"
+          },
+          "usage": {
+            "type": "object",
+            "description": "本次请求的 token 用量。",
+            "properties": {
+              "completion_tokens": {
+                "type": "integer",
+                "description": "模型生成的 token 数量。"
+              },
+              "total_tokens": {
+                "type": "integer",
+                "description": "视频生成模型不统计输入 token，输入 token 为 0，故 **total_tokens**=**completion_tokens**。"
+              }
+            }
+          }
+        }
+      },
+      "Embedding": {
+        "title": "Embedding",
+        "type": "object",
+        "properties": {
+          "index": {
+            "type": "integer",
+            "description": "向量的序号，与请求参数 `input` 列表中的内容顺序对应。"
+          },
+          "embedding": {
+            "type": "array",
+            "items": {
+              "type": "number",
+              "format": "float"
+            },
+            "description": "对应内容的向量化结果。"
+          },
+          "object": {
+            "type": "string",
+            "default": "embedding",
+            "description": "固定为 `embedding`。"
+          }
+        }
+      }
+    }
+  }
+}

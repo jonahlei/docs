@@ -1,0 +1,69 @@
+---
+title: '错误码'
+description: '您调用接口时可能碰到的公共错误码。包括客户端错误、限流错误等。'
+---
+
+## 客户端错误（4xx）
+### 400 BadRequest
+- MissingParameter
+  - 错误信息：The request failed because it is missing one or multiple required parameters. Request ID: {id}
+  - 含义：请求缺少必要参数，请查阅 API 文档。
+- InvalidParameter
+  - 错误信息：One or more parameters specified in the request are not valid. Request ID: {id}
+  - 含义：请求包含非法参数，请查阅 API 文档。
+- InvalidEndpoint.ClosedEndpoint
+  - 错误信息：The request targeted an endpoint that is currently closed or temporarily unavailable. Request ID: {id}
+  - 含义：推理接入点处于已被关闭或暂时不可用，请稍后重试，或联系推理接入点管理员。
+
+### 401 Unauthorized
+- AuthenticationError
+  - 错误信息：The API key or AK/SK in the request is missing or invalid. Request ID: {id}
+  - 含义：请求携带的 API Key 或 AK/SK 校验未通过，请您重新检查设置的 鉴权凭证，或者查看 API 调用文档来排查问题。
+
+### 403 Forbidden
+- AccountOverdueError
+  - 错误信息：The request failed because your account has an overdue balance. Request ID: {id}
+  - 含义：当前账号欠费，如需继续调用，请前往火山交易中心进行充值。
+- AccessDenied
+  - 错误信息：The request failed because you do not have access to the requested resource. Request ID: {id}
+  - 含义：没有访问该资源的权限，请检查权限设置，或联系管理员添加白名单。
+
+### 404 NotFound
+- InvalidEndpoint.NotFound
+  - 错误信息：The request targeted an endpoint that does not exist or is invalid. Request ID: {id}
+  - 含义：推理接入点不存在或者非法，请检查输入的推理接入点信息。
+
+## 限流错误（429）
+### RateLimitExceeded.EndpointRPMExceeded
+- 错误信息：The Requests Per Minute (RPM) limit of the associated endpoint for your account has been exceeded. Request ID: {id}
+- 含义：请求所关联的推理接入点已超过 RPM (Requests Per Minute) 限制，请稍后重试。
+
+### RateLimitExceeded.EndpointTPMExceeded
+- 错误信息：The Tokens Per Minute (TPM) limit of the associated endpoint for your account has been exceeded. Request ID: {id}
+- 含义：请求所关联的推理接入点已超过 TPM (Tokens Per Minute) 限制，请稍后重试。
+
+### ModelAccountRpmRateLimitExceeded
+- 错误信息：RPM (Requests Per Minute) limit of the model is exceeded. Request ID: {id}
+- 含义：请求已超过帐户模型 RPM (Requests Per Minute) 限制，请您稍后重试，或者联系平台技术同学进行解决。
+
+### ModelAccountTpmRateLimitExceeded
+- 错误信息：TPM (Tokens Per Minute) limit of the model is exceeded. Request ID: {id}
+- 含义：请求已超过帐户模型 TPM (Tokens Per Minute) 限制，请您稍后重试，或者联系平台技术同学进行解决。
+
+### QuotaExceeded
+- 错误信息：Your account [%s] has exhausted its free trial quota for the [%s] model. Request ID: {id}
+- 含义：当前账号 %s 对 %s 模型的免费试用额度已消耗完毕，如需继续调用，请前往火山方舟控制台开通管理页开通对应模型服务。
+
+### ModelLoadingError
+- 错误信息：The request cannot be processed at this time because the model is currently being loaded. Please retry later. Request ID: {id}
+- 含义：模型加载中，请您稍后重试。
+
+### ServerOverloaded
+- 错误信息：The service is currently unable to handle additional requests due to server overload. Please retry later. Request ID: {id}
+- 含义：服务资源紧张，请您稍后重试。常出现在调用流量突增或刚开始调用长时间未使用的推理接入点。
+
+## 服务器错误（5xx）
+### 500 InternalServerError
+- InternalServiceError
+  - 错误信息：The service encountered an unexpected internal error. Please retry later. Request ID: {id}
+  - 含义：内部系统异常，请您稍后重试。

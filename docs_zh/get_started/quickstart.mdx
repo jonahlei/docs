@@ -1,0 +1,273 @@
+---
+title: "快速入门"
+description: "使用 API 完成模型调用"
+---
+
+## 前提条件
+
+获取你的 [API Key](https://console.seed.com/settings/keys)
+
+## 调用 API
+
+<Tabs>
+  <Tab title="cURL">
+    <Steps>
+      <Step title="设置您的 API Key">
+        从 [Seed 控制台](https://console.seed.com/settings/keys) 获取您的 API并将其设置为环境变量。
+
+        ```bash
+        export SEED_API_KEY='your-api-key-here'
+        ```
+      </Step>
+
+      <Step title="进行您的第一次 API 调用">
+        运行此命令来创建一个简单的照片解析工具：
+
+        ```bash
+          curl https://ark.cn-beijing.volces.com/api/v3/chat/completions \
+            -H "Content-Type: application/json" \
+            -H "Authorization: Bearer $ARK_API_KEY" \
+            -d '{
+              "model": "doubao-seed-1-6-250615",
+              "messages": [
+                  {
+                      "content": [
+                          {
+                              "image_url": {
+                                  "url": "https://ark-project.tos-cn-beijing.ivolces.com/images/view.jpeg"
+                              },
+                              "type": "image_url"
+                          },
+                          {
+                              "text": "图片主要讲了什么?",
+                              "type": "text"
+                          }
+                      ],
+                      "role": "user"
+                  }
+              ]
+          }'
+        ````
+
+        **示例输出：**
+
+        ```json
+        {
+          "choices": [
+            {
+              "finish_reason": "stop",
+              "index": 0,
+              "logprobs": null,
+              "message": {
+                "content": "这张图片主要展现了一幅宁静而壮丽的自然景观：一位划着橙色皮划艇的人正独自在平静的湖面上行进，水面清晰倒映着皮划艇与身影。背景中，连绵的雪山巍峨耸立，山顶覆盖着皑皑白雪，山体轮廓雄浑；雪山前方是茂密的深绿色森林，树木挺拔，似为雪山与湖泊间的天然屏障。天空呈淡蓝色，点缀着几缕白云，光线柔和，湖面泛着淡淡的雾气，让森林与雪山间的过渡更显朦胧诗意。整体画面以自然元素为主，传递出人与自然和谐共处的宁静氛围，兼具壮阔与静谧之美。",
+                "reasoning_content": "\n用户现在需要我描述这张图片的主要内容。首先，我得仔细观察图片中的元素。首先看到的是一个人在水上划皮划艇，皮划艇是橙色的，比较显眼。然后背景是远处的雪山，山顶有积雪，山体看起来很雄伟，可能是连绵的山脉。山的前面是一片森林，树木茂密，颜色是深绿色，可能是针叶林，因为看起来比较挺拔。水面很平静，能看到皮划艇和人的倒影，天空是蓝色的，有一些白色的云，整体天气看起来晴朗，光线比较柔和，可能是清晨或者傍晚，因为水面上有淡淡的雾气，让森林和山之间有点朦胧感。\n\n接下来，需要把这些元素整合起来，说明主要内容。主要场景应该是一个宁静的自然环境中，有人在划皮划艇，背景是雪山、森林和湖泊，整体氛围是宁静、壮丽，人与自然和谐的感觉。要注意突出主要元素：人物活动（划皮划艇）、环境（雪山、森林、湖泊、天空）、氛围（宁静、壮丽）。需要避免细节过多，抓住核心。可能用户想知道图片的主体和背景，以及整体给人的感觉。所以主要内容应该是：画面展现了一位划着橙色皮划艇的人在平静的湖面上行进，背景是连绵的雪山、茂密的森林，天空晴朗有云，整体营造出宁静而壮丽的自然景观，体现人与自然的和谐。",
+                "role": "assistant"
+              }
+            }
+          ],
+          "created": 1756091794,
+          "id": "0217560917814813ed8856fe7ee7adc3d4de3ba720c0394934de1",
+          "model": "doubao-seed-1-6-250615",
+          "service_tier": "default",
+          "object": "chat.completion",
+          "usage": {
+            "completion_tokens": 451,
+            "prompt_tokens": 589,
+            "total_tokens": 1040,
+            "prompt_tokens_details": { "cached_tokens": 0 },
+            "completion_tokens_details": { "reasoning_tokens": 313 }
+          }
+        }
+
+        ```
+      </Step>
+    </Steps>
+
+  </Tab>
+
+  <Tab title="Python">
+    <Steps>
+      <Step title="设置您的 API Key">
+        从 [Seed 控制台](https://console.seed.com/settings/keys) 获取您的 API Key 并将其设置为环境变量：
+
+        ```bash
+        export ARK_API_KEY='your-api-key-here'
+        ```
+      </Step>
+
+      <Step title="安装 SDK">
+        安装 Python SDK：
+
+        ```bash
+        pip install openai # 新安装 OpenAI SDK
+        pip install --upgrade "openai" # 升级 OpenAI SDK
+        ```
+      </Step>
+
+      <Step title="创建您的代码">
+        将此保存为 `quickstart.py`：
+
+        ```python
+        import os
+        from openai import OpenAI
+
+        # 初始化Ark客户端，从环境变量中读取您的API Key，请确保您已将 API Key 存储在环境变量 ARK_API_KEY 中
+        client = OpenAI(
+            base_url="https://ark.cn-beijing.volces.com/api/v3",
+            api_key=os.environ.get("ARK_API_KEY"),
+        )
+
+        response = client.chat.completions.create(
+            # 指定模型 ID
+            model="doubao-seed-1-6-250615",
+            messages=[
+                {
+                    "role": "user",
+                    "content": [
+                        {
+                            "type": "image_url",
+                            "image_url": {
+                                "url": "https://ark-project.tos-cn-beijing.ivolces.com/images/view.jpeg"
+                            },
+                        },
+                        {"type": "text", "text": "图片主要讲了什么?"},
+                    ],
+                }
+            ],
+        )
+
+        print(response.choices[0])
+        ```
+      </Step>
+
+      <Step title="运行您的代码">
+        ```bash
+        python quickstart.py
+        ```
+
+        **示例输出：**
+
+        ```bash
+        Choice(finish_reason='stop', index=0, logprobs=None, message=ChatCompletionMessage(content='这张图片主要描绘了一幅人与自然和谐交融的宁静画面：一名身着救生衣的人正划着橙色皮划艇，在开阔的蓝色湖面上前行，水面泛起轻微波纹，传递出动态的生机。背景中，连绵的雪山巍峨耸立，山顶覆盖着皑皑白雪，山体轮廓清晰；雪山前方是茂密的深绿色森林，林间薄雾缭绕，增添了朦胧的层次感；上方是晴朗的蓝天，点缀着少许白云，整体光线明亮柔和。\n\n\n画面以“人在自然中活动”为核心，通过皮划艇的橙色与湖水的蓝、雪山的白、森林的绿形成鲜明色彩对比，既突出了人类探索自然的身影，又展现了雪山、森林、湖泊构成的壮丽自然景观，传递出宁静、开阔、自由的氛围，以及对自然之美与户外生活的向往。', refusal=None, role='assistant', annotations=None, audio=None, function_call=None, tool_calls=None, reasoning_content='\n用户现在需要我分析这张图片主要讲了什么。首先，我需要仔细描述图片中的元素，然后整合这些元素来概括主题。\n\n首先，图片的主体是一个人在划皮划艇。皮划艇是橙色的，在蓝色的水面上，这样颜色对比明显，容易注意到。这个人穿着救生衣，手里拿着桨，正在划水，水面有轻微的波纹，显示出动态。\n\n背景方面，远处是连绵的雪山，山顶覆盖着白雪，山体呈现出深色的轮廓，显得雄伟壮丽。雪山前面是一片茂密的森林，树木高大，颜色深绿，可能是针叶林，森林和雪山之间有一层薄雾，增加了画面的层次感和朦胧美。\n\n天空是蓝色的，有少量的白云，天气看起来晴朗，光线明亮，阳光可能从侧面照射，让雪山和水面都有光泽，整体氛围宁静而开阔。\n\n综合这些元素：一个人在宁静的湖面上划皮划艇，背景是雪山、森林和晴朗的天空。主题应该是自然景观的壮丽与人类在自然中活动的和谐，展现出一种宁静、自由、亲近自然的氛围，可能传达出对户外探险、自然之美的欣赏，或者一种远离喧嚣、享受独处的平静心境。\n\n需要注意的是，用户可能想知道图片的核心内容，所以需要突出主体活动（划皮划艇）和背景环境（雪山、森林、湖面）的结合，以及整体的氛围（宁静、壮丽、自然和谐）。\n\n可能还要考虑情感层面，比如画面给人的感觉是平和、开阔，或者带有探索的意味。所以总结起来，图片主要描绘了一个人在宁静的湖面上划皮划艇，背景是雄伟的雪山和茂密的森林，展现了自然景观的壮丽与人类亲近自然的和谐画面，传递出宁静、自由与对自然之美的欣赏。'))
+        ```
+      </Step>
+    </Steps>
+
+  </Tab>
+
+  <Tab title="JavaScript">
+    <Steps>
+      <Step title="设置您的 API Key">
+        从 [Seed 控制台](https://console.seed.com/settings/keys) 获取您的 API Key并将其设置为环境变量：
+
+        ```bash
+        export ARK_API_KEY='your-api-key-here'
+        ```
+      </Step>
+
+      <Step title="安装 SDK">
+        安装 JavaScript SDK：
+
+        ```bash
+        npm install openai
+        ```
+      </Step>
+
+      <Step title="创建您的代码">
+        将此保存为 `quickstart.js`：
+
+        ```javascript
+        import OpenAI from "openai";
+
+        const openai = new OpenAI({
+          apiKey: process.env.ARK_API_KEY,
+          baseURL: "https://ark.cn-beijing.volces.com/api/v3",
+        });
+
+        async function main() {
+          const response = await openai.chat.completions.create({
+            model: "doubao-seed-1-6-250615",
+            messages: [
+              {
+                role: "user",
+                content: [
+                  {
+                    type: "image_url",
+                    image_url: {
+                      url: "https://ark-project.tos-cn-beijing.ivolces.com/images/view.jpeg",
+                    },
+                  },
+                  { type: "text", text: "图片主要讲了什么?" },
+                ],
+              },
+            ],
+          });
+
+          console.log(response.choices[0]);
+        }
+
+        main();
+        ```
+      </Step>
+
+      <Step title="运行您的代码">
+        ```bash
+        node quickstart.js
+        ```
+
+        **示例输出：**
+
+        ```javascript
+        {
+          finish_reason: 'stop',
+          index: 0,
+          logprobs: null,
+          message: {
+            content: '这张图片主要展现了一幅宁静壮丽的自然景观与人类活动和谐交融的画面。画面中，一人乘橙色皮划艇在平静的湖面上划行，湖面泛着轻微波纹，倒映着皮划艇的身影。远处是巍峨的雪山，山顶覆盖积雪，山体雄伟壮阔；雪山前是茂密的深绿色森林，林间似有薄雾缭绕，增添了层次感。天空湛蓝，飘着淡云，光线柔和，整体氛围宁静开阔。\n' +
+              '\n' +
+              '\n' +
+              '图片通过“雪山-森林-湖泊-人”的空间层次，既凸显了自然景观的宏大壮丽（雪山的巍峨、森林的茂密、湖面的开阔），又以橙色皮划艇和划桨人的动态，赋予画面生机，传递出一种远离喧嚣、亲近自然的宁静感，以及人与自然和谐共处的意境。',
+            reasoning_content: '\n' +
+              '用户现在需要我分析这张图片主要讲了什么。首先，我需要仔细观察图片中的元素。首先看到的是一个人在划皮划艇，皮划艇是橙色的，在水面上，水面看起来很平静，有轻微的波纹。背景是远处的雪山，山顶有积雪，山体看起来很雄伟，覆盖着白色。雪山前面是一片茂密的森林，树木是深绿色的，可能是针叶林，森林和雪山之间有淡淡的雾气，增加了层次感。天空是蓝色的，有一些白色的云，整体光线比较柔和，可能是清晨或傍晚，阳光不太强烈，给人一种宁静的感觉。\n' +
+              '\n' +
+              '接下来，需要整合这些元素，分析整体的氛围和主题。主要元素包括：划皮划艇的人、平静的湖面、雪山、森林、蓝天。这些元素组合在一起，应该是在展现自然景观的壮丽和宁静，同时有人的活动，体现人与自然的和谐，或者是一种户外探险、休闲的场景。橙色的皮划艇在蓝色的湖面上比较显眼，形成对比，突出人的存在，但人在广阔的自然中显得比较渺小，可能也暗示自然的宏大。\n' +
+              '\n' +
+              '然后，考虑情感或主题。整体画面给人的感觉是宁静、开阔、放松，可能传达一种远离喧嚣、亲近自然的生活态度，或者对自然美景的赞美。雪山和森林代表自然的壮丽，湖面的平静和划艇的动作则带来动态与静态的结合，既有自然的静谧，又有人的活动带来的生机。\n' +
+              '\n' +
+              '需要避免过于细节的描述，而是提炼主要内容：自然景观（雪山、森林、湖泊）和人的活动（划皮划艇），整体氛围宁静壮丽，展现人与自然的和谐或户外休闲场景。',
+            role: 'assistant'
+          }
+        }
+        ```
+      </Step>
+    </Steps>
+
+  </Tab>
+
+</Tabs>
+
+## 下一步
+
+现在您已经进行第一次模型服务请求，可以其他丰富使用方式：
+
+<CardGroup cols={4}>
+  <Card title="深度思考" icon="brain-circuit" href="../developer_guide/deep_thinking">
+    探索模型的 深度思考 能力使用实践。
+  </Card>
+
+<Card
+  title="视觉理解"
+  icon="eye"
+  href="../developer_guide/visual_understanding"
+>
+  探索模型的 视觉理解 能力使用实践。
+</Card>
+
+  <Card title="图片生成" icon="image" href="../developer_guide/image_generation">
+    探索模型的 图片生成 能力使用实践。
+  </Card>
+    <Card title="视频生成" icon="video" href="../developer_guide/video_generation">
+    探索模型的 视频生成 能力使用实践。
+  </Card>
+</CardGroup>
+````

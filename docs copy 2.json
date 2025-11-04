@@ -1,0 +1,256 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "mint",
+  "name": "Seed 文档",
+  "colors": {
+    "primary": "#0084ff",
+    "light": "#66b5ff",
+    "dark": "#004f99"
+  },
+  "favicon": "/favicon.svg",
+  "navigation": {
+    "global": {
+      "anchors": [
+        {
+          "anchor": "API Key",
+          "href": "https://console.volcengine.com/ark/region:ark+cn-beijing/apiKey?apikey=%7B%7D",
+          "icon": "key"
+        }
+      ]
+    },
+    "languages": [
+      {
+        "language": "zh",
+        "tabs": [
+          {
+            "tab": "Docs",
+            "groups": [
+              {
+                "group": "开始使用",
+                "pages": [
+                  "docs_zh/get_started/quickstart",
+                  "docs_zh/get_started/api_key",
+                  "docs_zh/get_started/model_list"
+                ]
+              },
+              {
+                "group": "开发指南",
+                "pages": [
+                  "docs_zh/developer_guide/deep_thinking",
+                  "docs_zh/developer_guide/visual_understanding",
+                  "docs_zh/developer_guide/image_generation",
+                  "docs_zh/developer_guide/video_generation",
+                  "docs_zh/developer_guide/text_generation"
+                ]
+              },
+              {
+                "group": "最佳实践",
+                "pages": [
+                  "docs_zh/best_practices/image_prompt_guide",
+                  "docs_zh/best_practices/video_prompt_guide"
+                ]
+              },
+              {
+                "group": "常见问题",
+                "pages": ["docs_zh/faq"]
+              },
+              {
+                "group": "法务协议",
+                "pages": ["docs_zh/legal/legal_agreement"]
+              }
+            ]
+          },
+          {
+            "tab": "API Reference",
+            "groups": [
+              {
+                "group": "简介1",
+                "pages": [
+                  "api_reference_zh/authentication",
+                  "api_reference_zh/get_api_key",
+                  "api_reference_zh/error-codes",
+                  "api_reference_zh/rate_limiting"
+                ]
+              },
+              
+              {
+                "group": "test111",
+                "openapi": "api_json_zh/openapi.json",
+                "pages": [
+                  "POST /embeddings"
+                ]
+              },
+              {
+                "group": "接口详情",
+                "openapi": {
+                  "source": "api_json_zh/openapi.json "
+                }
+              },
+              {
+                "group": "视频生成",
+                "pages": ["api_reference_zh/endpoint/contentsgenerationstasks"]
+              },
+              {
+                "group": "分词",
+                "pages": ["api_reference_zh/endpoint/tokenization"]
+              }
+            ]
+          },
+          {
+            "tab": "Release Notes",
+            "groups": [
+              {
+                "group": "模型更新记录",
+                "pages": ["releasenotes/model_update_notes"]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "language": "en",
+        "tabs": [
+          {
+            "tab": "Docs",
+            "groups": [
+              {
+                "group": "开始使用",
+                "pages": ["docs_en/quickstart", "docs_en/model_list"]
+              },
+              {
+                "group": "开发指南",
+                "pages": [
+                  "docs_en/developer_guide/deep_thinking",
+                  "docs_en/developer_guide/visual_understanding",
+                  "docs_en/developer_guide/image_generation",
+                  "docs_en/developer_guide/video_generation",
+                  "docs_en/developer_guide/text_generation"
+                ]
+              },
+              {
+                "group": "最佳实践",
+                "pages": [
+                  "docs_en/best_practices/image_prompt_guide",
+                  "docs_en/best_practices/video_prompt_guide"
+                ]
+              },
+              {
+                "group": "常见问题",
+                "pages": ["docs_en/faq"]
+              },
+              {
+                "group": "法务协议",
+                "pages": ["docs_en/legal/legal_agreement"]
+              }
+            ]
+          },
+          {
+            "tab": "API Reference",
+            "groups": [
+              {
+                "group": "简介",
+                "pages": [
+                  "api_reference_en/authentication",
+                  "api_reference_en/get_api_key",
+                  "api_reference_en/error-codes",
+                  "api_reference_en/rate_limiting"
+                ]
+              },
+              {
+                "group": "对话 Chat",
+                "pages": [
+                  "api_reference_en/endpoint/chatcompletions",
+                  "api_reference_en/endpoint/contextcreate",
+                  "api_reference_en/endpoint/contextchatcompletions",
+                  "api_reference_en/endpoint/batchchatcompletions"
+                ]
+              },
+              {
+                "group": " ",
+                "openapi": {
+                  "source": "api_json_en/chatcompletions.json"
+                }
+              },
+              {
+                "group": "图片生成",
+                "pages": [
+                  "api_reference_en/endpoint/images_generation_create",
+                  "api_reference_en/endpoint/images_generation_query_id",
+                  "api_reference_en/endpoint/images_generation_query_filters",
+                  "api_reference_en/endpoint/images_generation_delete"
+                ]
+              },
+              {
+                "group": "视频生成",
+                "pages": ["api_reference_en/endpoint/contents_generations_task"]
+              },
+              {
+                "group": "向量化",
+                "pages": [
+                  "api_reference_en/endpoint/embeddingsmultimodal",
+                  "api_json_en/embeddings.json POST /embeddings",
+                  "api_json_en/embeddings.json POST /embeddings"
+                ]
+              },
+              {
+                "group": "分词",
+                "pages": ["api_reference_en/endpoint/tokenization"]
+              }
+            ]
+          },
+          {
+            "tab": "Release Notes",
+            "groups": [
+              {
+                "group": "模型更新记录",
+                "pages": ["releasenotes/model_update_notes"]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "api": {
+    "playground": {
+      "display": "interactive"
+    },
+    "mdx": {
+      "server": "https://ark.cn-beijing.volces.com/api/v3",
+      "auth": {
+        "method": "bearer",
+        "name": "API Key"
+      }
+    },
+    "examples": {
+      "languages": ["curl", "python", "node", "go", "java"]
+    }
+  },
+  "logo": {
+    "light": "/logo/logo_light.svg",
+    "dark": "/logo/logo_dark.svg",
+    "href": "https://console.volcengine.com/ark"
+  },
+  "navbar": {
+    "primary": {
+      "type": "button",
+      "label": "体验中心",
+      "href": "https://console.volcengine.com/ark/region:ark+cn-beijing/experience/?projectName=default"
+    }
+  },
+  "footer": {
+    "socials": { "github": "https://github.com/volcengine" }
+  },
+  "contextual": {
+    "options": [
+      "copy",
+      "view",
+      "chatgpt",
+      "claude",
+      "perplexity",
+      "mcp",
+      "cursor",
+      "vscode"
+    ]
+  }
+}
